@@ -1,0 +1,108 @@
+{
+  "projectType": "frontend",
+  "projectName": "I/O Festival 2026",
+  "projectDescription": "A futuristic Next.js website for I/O Festival 2026, a national technology competition featuring UI/UX, Web Development, and Business Case tracks.",
+  "theme": "aspen",
+  "primaryColor": "#a64dff",
+  "lightColor": "#55D5E7",
+  "darkColor": "#ff8c42",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Components",
+            "pages": [
+              "components/layout",
+              "components/sections",
+              "components/effects"
+            ]
+          },
+          {
+            "group": "Styling",
+            "pages": [
+              "styling/theming",
+              "styling/animations"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "development/structure",
+              "development/configuration",
+              "development/building"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Core Components",
+            "pages": [
+              "api/navbar",
+              "api/hero",
+              "api/footer"
+            ]
+          },
+          {
+            "group": "Section Components",
+            "pages": [
+              "api/about",
+              "api/tracks",
+              "api/timeline",
+              "api/prizes",
+              "api/faq",
+              "api/contact"
+            ]
+          },
+          {
+            "group": "Effect Components",
+            "pages": [
+              "api/scene3d",
+              "api/stardust",
+              "api/noise-overlay",
+              "api/smooth-scroll"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Next.js 16 App Router with React 19",
+    "3D graphics with Three.js and React Three Fiber",
+    "Smooth scroll animations with Lenis",
+    "Glassmorphism UI with Tailwind CSS",
+    "Framer Motion animations",
+    "Responsive design with mobile optimization",
+    "Custom font loading (Raela Grotesque & Plus Jakarta Sans)",
+    "Interactive countdown timer",
+    "Dynamic competition track pages"
+  ],
+  "publicApiSurface": [
+    "Navbar - Main navigation component",
+    "Hero - Landing hero section with countdown",
+    "About - About section with three pillars",
+    "Tracks - Competition tracks showcase",
+    "Timeline - Event timeline component",
+    "Prizes - Prize display section",
+    "FAQ - Frequently asked questions",
+    "Contact - Contact form with map",
+    "Scene3D - Three.js 3D scene with floating geometries",
+    "StarDust - Particle effect background",
+    "NoiseOverlay - Grain texture overlay",
+    "SmoothScroll - Lenis smooth scroll wrapper",
+    "Footer - Site footer component"
+  ]
+}
