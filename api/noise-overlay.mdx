@@ -1,0 +1,194 @@
+---
+title: 'NoiseOverlay'
+description: 'Grain texture overlay component for visual texture'
+---
+
+## Overview
+
+The `NoiseOverlay` component adds a subtle film grain texture overlay to the entire viewport. It uses a base64-encoded PNG noise texture that tiles across the screen, creating a vintage or textured aesthetic. The component is optimized for performance and hidden on mobile devices.
+
+## Dependencies
+
+This component has no external dependencies. It uses only:
+- React
+- CSS background properties
+- Inline base64 image data
+
+## Import
+
+```tsx
+import { NoiseOverlay } from '@/components/effects/NoiseOverlay';
+```
+
+## Props
+
+The `NoiseOverlay` component does not accept any props. All styling is applied via fixed className and inline styles.
+
+## Usage
+
+```tsx
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NoiseOverlay />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+## Styling
+
+The component applies the following CSS classes and inline styles:
+
+### CSS Classes
+
+- `fixed inset-0` - Covers entire viewport
+- `z-[40]` - High z-index to appear above most content
+- `pointer-events-none` - Prevents interaction interference
+- `opacity-[0.03]` - Very subtle on mobile (hidden by default)
+- `md:opacity-[0.05]` - Slightly more visible on desktop
+- `mix-blend-normal` - Standard blend mode
+- `overflow-hidden` - Prevents texture overflow
+- `gpu` - GPU acceleration hint
+- `transform-gpu` - GPU-accelerated transforms
+- `bg-[length:50px_50px]` - Small tile size on mobile
+- `md:bg-[length:100px_100px]` - Larger tile size on desktop
+- `max-md:hidden` - **Hidden on mobile devices**
+
+### Inline Styles
+
+<ParamField path="backgroundImage" type="string">
+  Base64-encoded PNG image (50x50px noise texture)
+</ParamField>
+
+<ParamField path="backgroundRepeat" type="string" default="repeat">
+  Tiles the texture across the entire viewport
+</ParamField>
+
+## Texture Details
+
+The noise texture is:
+- **Dimensions**: 50x50 pixels
+- **Format**: PNG (base64-encoded)
+- **Pattern**: Random grain/noise pattern
+- **Color**: Monochrome noise
+
+## Responsive Behavior
+
+### Mobile (< 768px)
+- **Hidden completely** with `max-md:hidden`
+- This improves performance on mobile devices
+- Reduces visual complexity on smaller screens
+
+### Desktop (≥ 768px)
+- Visible with 5% opacity
+- 100x100px tile size
+- Creates subtle film grain effect
+
+## Performance Considerations
+
+### Optimizations
+
+- **GPU acceleration**: Uses `transform-gpu` class
+- **Small texture**: 50x50px base texture minimizes memory
+- **Base64 inline**: No additional HTTP request
+- **Mobile hidden**: Completely disabled on mobile devices
+- **Fixed positioning**: No reflow on scroll
+
+### Performance Tips
+
+- The component is already optimized for production use
+- Consider lowering opacity further if performance issues arise
+- The `pointer-events-none` prevents any interaction overhead
+
+## Visual Effect
+
+The overlay creates:
+- Subtle film grain texture
+- Vintage/retro aesthetic
+- Reduced digital "smoothness"
+- Adds visual depth and character
+
+## Customization
+
+To customize the effect, modify these values:
+
+```tsx
+// Opacity
+className="... opacity-[0.03] md:opacity-[0.05] ..."
+
+// Tile size
+className="... bg-[length:50px_50px] md:bg-[length:100px_100px] ..."
+
+// Z-index
+className="... z-[40] ..."
+
+// Blend mode
+className="... mix-blend-normal ..."
+```
+
+### Alternative Blend Modes
+
+You can experiment with different blend modes:
+
+```tsx
+// Subtle overlay
+mix-blend-overlay
+
+// Multiply for darker effect
+mix-blend-multiply
+
+// Screen for lighter effect
+mix-blend-screen
+
+// Soft light for gentle effect
+mix-blend-soft-light
+```
+
+## Use Cases
+
+- Adding texture to flat designs
+- Creating vintage/retro aesthetics
+- Reducing harsh digital appearance
+- Subtle background texture
+- Film grain effect
+
+## Browser Support
+
+Works in all modern browsers:
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 15+
+
+Requires support for:
+- CSS `mix-blend-mode`
+- Base64 data URIs
+- CSS backdrop filters (optional)
+
+## Notes
+
+- The component is marked with `'use client'` directive for Next.js
+- The texture is static (does not animate)
+- Very low performance impact due to optimizations
+- The `aria-hidden` attribute is not needed as it's purely decorative
+- Consider adding `aria-hidden="true"` if you want to explicitly hide from screen readers
+
+## Example with Custom Opacity
+
+```tsx
+// Create a custom version with higher opacity
+export function NoiseOverlayStrong() {
+  return (
+    <div
+      className="fixed inset-0 z-[40] pointer-events-none opacity-[0.08] md:opacity-[0.12] mix-blend-overlay overflow-hidden gpu transform-gpu bg-[length:50px_50px] md:bg-[length:100px_100px]"
+      style={{
+        backgroundImage: `url("data:image/png;base64,...")`,
+        backgroundRepeat: 'repeat',
+      }}
+    />
+  );
+}
+```

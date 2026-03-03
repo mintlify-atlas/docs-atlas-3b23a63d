@@ -1,0 +1,137 @@
+---
+title: 'Scene3D'
+description: 'Three.js 3D scene component with animated geometric shapes'
+---
+
+## Overview
+
+The `Scene3D` component renders an interactive 3D scene using Three.js and React Three Fiber. It displays floating geometric shapes with custom materials, distortion effects, and dynamic lighting. The scene automatically pauses rendering when out of view to optimize performance.
+
+## Dependencies
+
+This component requires the following Three.js ecosystem packages:
+
+- `three` - Core Three.js library
+- `@react-three/fiber` - React renderer for Three.js
+- `@react-three/drei` - Helper components (Float, PerspectiveCamera, MeshDistortMaterial, Environment)
+- `framer-motion` - Used for viewport detection with `useInView`
+
+## Installation
+
+```bash
+npm install three @react-three/fiber @react-three/drei framer-motion
+```
+
+## Import
+
+```tsx
+import { Scene3D } from '@/components/effects/Scene3D';
+```
+
+## Props
+
+The `Scene3D` component does not accept any props. All configuration is internal.
+
+## Usage
+
+```tsx
+export default function Page() {
+  return (
+    <div className="relative min-h-screen">
+      <Scene3D />
+      <div className="relative z-10">
+        {/* Your content here */}
+      </div>
+    </div>
+  );
+}
+```
+
+## Features
+
+### Geometric Shapes
+
+The scene includes three animated geometric shapes:
+
+1. **Icosahedron** - Pink distorted mesh with metallic material
+2. **Torus** - Cyan glowing ring with emissive properties
+3. **Octahedron** - Purple wireframe shape
+
+Each shape uses the `Float` component from drei for smooth floating animations.
+
+### Lighting Setup
+
+The scene includes multiple light sources:
+
+- Ambient light for base illumination
+- Spotlight for directional lighting
+- Two point lights (cyan and pink) for accent colors
+- HDR environment map ("city" preset) for realistic reflections
+
+### Performance Optimization
+
+The component uses Framer Motion's `useInView` hook to detect viewport visibility:
+
+```tsx
+const isInView = useInView(containerRef, { margin: "200px" });
+```
+
+The Canvas `frameloop` prop is set to:
+- `"always"` when in view (active rendering)
+- `"never"` when out of view (paused rendering)
+
+This prevents unnecessary GPU usage when the scene is off-screen.
+
+## Styling
+
+The component applies the following default classes:
+
+- `absolute inset-0` - Covers the entire parent container
+- `pointer-events-none` - Prevents interaction interference
+- `opacity-40` - Semi-transparent background effect
+- `z-0` - Places behind other content
+
+## Technical Details
+
+### Canvas Configuration
+
+- **Camera**: PerspectiveCamera positioned at `[0, 0, 8]`
+- **Render Loop**: Conditional based on viewport visibility
+- **Rotation Animation**: Uses `useFrame` hook for continuous rotation
+
+### Material Properties
+
+**Icosahedron (Pink):**
+- MeshDistortMaterial with distort value of 0.4
+- Clearcoat for glossy finish
+- Metalness: 0.5
+
+**Torus (Cyan):**
+- Standard material with emissive properties
+- Emissive intensity: 0.5
+- High metalness, low roughness
+
+**Octahedron (Purple):**
+- Wireframe mode
+- High emissive intensity (2.0)
+
+## Performance Considerations
+
+- The scene automatically pauses when out of viewport
+- Uses GPU-accelerated rendering through WebGL
+- Optimized for modern browsers with WebGL2 support
+- Consider reducing geometry complexity for lower-end devices
+- The 200px margin on `useInView` provides smooth activation before entering viewport
+
+## Browser Support
+
+Requires WebGL support. Works best on:
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 15+
+
+## Notes
+
+- The component is marked with `'use client'` directive for Next.js client-side rendering
+- Ensure the parent container has positioning context (relative/absolute/fixed)
+- The scene renders in a fixed aspect ratio based on viewport dimensions

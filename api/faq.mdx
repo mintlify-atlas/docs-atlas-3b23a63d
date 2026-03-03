@@ -1,0 +1,95 @@
+---
+title: FAQ
+description: API reference for the FAQ accordion component
+---
+
+The FAQ section displays frequently asked questions in an accordion layout with smooth expand/collapse animations.
+
+## Import
+
+```tsx
+import { FAQ } from '@/components/sections/FAQ';
+```
+
+## Usage
+
+```tsx
+export default function Home() {
+  return (
+    <main>
+      <FAQ />
+    </main>
+  );
+}
+```
+
+## Props
+
+This component does not accept any props.
+
+## Features
+
+- **Accordion interaction**: Only one FAQ can be open at a time
+- **Smooth animations**: Height and opacity transitions with AnimatePresence
+- **Icon indicators**: Plus/Minus icons from Lucide React
+- **Glass styling**: Translucent backgrounds with backdrop blur
+- **Keyboard accessible**: Button-based interaction for screen readers
+
+## FAQ Data Structure
+
+```tsx
+const faqs = [
+  {
+    question: "Siapa pihak yang dapat mendaftar?",
+    answer: "I/O Festival 2026 menyambut pelajar SMA..."
+  },
+  // ... more FAQs
+];
+```
+
+<ParamField path="question" type="string">
+  The question text displayed in the accordion header
+</ParamField>
+
+<ParamField path="answer" type="string">
+  The answer text displayed when accordion is expanded
+</ParamField>
+
+## State Management
+
+```tsx
+const [openIndex, setOpenIndex] = useState<number | null>(null);
+```
+
+The component tracks which FAQ is currently open. Clicking an open FAQ closes it, clicking a closed FAQ opens it and closes others.
+
+## Animation Configuration
+
+```tsx
+<motion.div
+  initial={{ height: 0, opacity: 0 }}
+  animate={{ height: "auto", opacity: 1 }}
+  exit={{ height: 0, opacity: 0 }}
+  transition={{ duration: 0.3 }}
+>
+```
+
+- **Duration**: 0.3 seconds
+- **Properties**: Height (auto-calculated) and opacity
+- **Exit animation**: Reverse of entrance animation
+
+## Styling
+
+- **Border**: `border-white/10` with rounded-2xl corners
+- **Background**: `bg-black/50` with `backdrop-blur-sm`
+- **Question text**: Font Raela, bold, 17px, white
+- **Answer text**: White/70 opacity, 15px, leading-relaxed
+- **Icons**: White/70 opacity with 1.5px stroke width
+- **Spacing**: 4-unit gap between FAQ items
+
+## Accessibility
+
+- Uses semantic `<button>` elements for keyboard navigation
+- Full width clickable area
+- Visual indicators (Plus/Minus) for state
+- Text left-aligned for readability

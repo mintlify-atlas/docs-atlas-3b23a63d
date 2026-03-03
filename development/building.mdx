@@ -1,0 +1,290 @@
+---
+title: Building & Deployment
+description: Build process, npm scripts, and deployment workflow
+---
+
+Guide to building, running, and deploying the I/O Festival 2026 website.
+
+## Prerequisites
+
+Before building the project, ensure you have:
+
+- **Node.js**: Version 20 or later
+- **npm**: Version 10 or later (comes with Node.js)
+- **Git**: For version control
+
+## Installation
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone <repository-url>
+    cd it-competition-web
+    ```
+  </Step>
+  
+  <Step title="Install dependencies">
+    ```bash
+    npm install
+    ```
+    
+    This installs all dependencies from `package.json:11-44`, including:
+    - Next.js 16.1.6
+    - React 19.2.3
+    - TypeScript 5
+    - Tailwind CSS 4
+    - Three.js and React Three Fiber
+    - Framer Motion for animations
+  </Step>
+</Steps>
+
+## Available Scripts
+
+The project includes four npm scripts defined in `package.json:5-10`:
+
+### Development
+
+```bash
+npm run dev
+```
+
+Starts the development server:
+- Runs on `http://localhost:3000`
+- Enables Hot Module Replacement (HMR)
+- Uses Turbopack for faster compilation
+- Shows detailed error messages and stack traces
+
+**When to use:** During active development and testing.
+
+### Build
+
+```bash
+npm run build
+```
+
+Creates an optimized production build:
+- Compiles TypeScript to JavaScript
+- Bundles and minifies code
+- Optimizes images and assets
+- Generates static pages where possible
+- Creates route manifests and metadata
+- Outputs to `.next/` directory
+
+**When to use:** Before deploying or to test production behavior locally.
+
+<Warning>
+  **React Compiler Requirement**: The build currently requires the `babel-plugin-react-compiler` package to be installed for the React Compiler feature enabled in `next.config.ts:6`. Ensure this dependency is present in `node_modules`.
+</Warning>
+
+### Start
+
+```bash
+npm start
+```
+
+Runs the production server:
+- Serves the production build from `.next/`
+- Requires `npm run build` to be run first
+- Runs on `http://localhost:3000` by default
+- Optimized for performance with compression enabled
+
+**When to use:** To test the production build locally before deployment.
+
+### Lint
+
+```bash
+npm run lint
+```
+
+Runs ESLint to check code quality:
+- Checks TypeScript and JavaScript files
+- Validates against Next.js best practices
+- Enforces Core Web Vitals rules
+- Uses configuration from `eslint.config.mjs:1`
+
+**When to use:** Before committing code or as part of CI/CD.
+
+## Build Process
+
+<Steps>
+  <Step title="Type Checking">
+    TypeScript validates all types using `tsconfig.json` settings:
+    - Strict mode enabled
+    - Path aliases resolved
+    - JSX transformed to React elements
+  </Step>
+  
+  <Step title="React Compilation">
+    React Compiler optimizes components:
+    - Automatic memoization
+    - Eliminates unnecessary re-renders
+    - Requires `babel-plugin-react-compiler`
+  </Step>
+  
+  <Step title="Code Bundling">
+    Next.js bundles the application:
+    - Splits code by route
+    - Optimizes package imports (Framer Motion, Lucide)
+    - Tree-shakes unused code
+    - Minifies JavaScript and CSS
+  </Step>
+  
+  <Step title="Asset Optimization">
+    Static assets are processed:
+    - Images optimized with Next.js Image
+    - Fonts subset and optimized
+    - CSS purged and minified
+    - Public files copied to output
+  </Step>
+  
+  <Step title="Static Generation">
+    Pages are pre-rendered where possible:
+    - Static pages fully rendered at build time
+    - Dynamic routes generate paths
+    - Metadata generated
+    - Sitemap and robots.txt created
+  </Step>
+</Steps>
+
+## Build Output
+
+After a successful build, Next.js creates several directories:
+
+```
+.next/
+├── cache/                # Build cache for faster rebuilds
+├── server/               # Server-side code
+├── static/               # Static assets with hashed filenames
+└── types/                # Generated TypeScript types
+```
+
+The `.next` directory should never be committed to version control (excluded in `.gitignore:17`).
+
+## Production Optimization
+
+The build includes several optimizations:
+
+### Enabled by Default
+
+- **Compression**: Gzip compression enabled in `next.config.ts:4`
+- **Code Splitting**: Automatic route-based splitting
+- **Tree Shaking**: Removes unused code
+- **Minification**: JavaScript and CSS minified
+- **Image Optimization**: Responsive images with WebP/AVIF
+
+### Package Optimizations
+
+Configured in `next.config.ts:8`:
+
+```typescript
+optimizePackageImports: ['framer-motion', 'lucide-react']
+```
+
+- **framer-motion**: Only bundles used animation components
+- **lucide-react**: Tree-shakes unused icons
+
+These optimizations significantly reduce bundle size for large libraries.
+
+## Deployment
+
+The project can be deployed to various platforms:
+
+### Vercel (Recommended)
+
+<Steps>
+  <Step title="Connect repository">
+    Link your Git repository to Vercel:
+    - Automatic deployments on push
+    - Preview deployments for pull requests
+    - Production deployment on main branch
+  </Step>
+  
+  <Step title="Configure project">
+    Vercel auto-detects Next.js:
+    - Build command: `npm run build`
+    - Output directory: `.next`
+    - Install command: `npm install`
+  </Step>
+  
+  <Step title="Deploy">
+    Push to main branch or click Deploy in Vercel dashboard.
+  </Step>
+</Steps>
+
+### Other Platforms
+
+The project supports any Node.js hosting:
+
+1. **Build the project**: `npm run build`
+2. **Upload files**: Deploy entire project directory
+3. **Install dependencies**: Run `npm install --production`
+4. **Start server**: Execute `npm start`
+5. **Set port**: Configure `PORT` environment variable if needed
+
+### Environment Variables
+
+Create `.env.local` for environment-specific configuration:
+
+```bash
+# Example variables
+NEXT_PUBLIC_API_URL=https://api.example.com
+ANALYTICS_ID=your-analytics-id
+```
+
+<Note>
+  Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser. Keep sensitive keys without this prefix to restrict them to server-side code only.
+</Note>
+
+## Troubleshooting
+
+### Build Fails with React Compiler Error
+
+**Error**: `Failed to resolve package babel-plugin-react-compiler`
+
+**Solution**: Install the React Compiler plugin:
+
+```bash
+npm install babel-plugin-react-compiler
+```
+
+The package is listed in `devDependencies` and should be installed automatically. If missing, add it manually.
+
+### Port Already in Use
+
+**Error**: `Port 3000 is already in use`
+
+**Solution**: Use a different port:
+
+```bash
+PORT=3001 npm run dev
+```
+
+### Type Errors After Dependency Update
+
+**Solution**: Clear TypeScript cache and rebuild:
+
+```bash
+rm -rf .next
+rm -rf node_modules/.cache
+npm run build
+```
+
+### Slow Build Times
+
+**Solutions**:
+- Enable incremental builds (already configured in `tsconfig.json:15`)
+- Clear `.next/cache` directory
+- Increase Node.js memory: `NODE_OPTIONS=--max-old-space-size=4096 npm run build`
+
+## Performance Metrics
+
+After building, Next.js reports bundle sizes:
+
+- **First Load JS**: Total JavaScript for initial page load
+- **Route Sizes**: Individual page bundle sizes
+- **Shared Chunks**: Common code split across routes
+
+Target metrics:
+- First Load JS < 200 KB
+- Individual routes < 50 KB
+- Core Web Vitals passing

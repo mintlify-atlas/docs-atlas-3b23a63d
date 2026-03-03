@@ -1,0 +1,597 @@
+---
+title: Effects Components
+description: Visual effects and interaction enhancements including 3D scenes, particles, and smooth scrolling
+icon: sparkles
+---
+
+Effects components provide visual polish and enhanced interactions for the I/O Festival 2026 website. These components add ambient animations, smooth scrolling, and atmospheric effects.
+
+## Available Effects
+
+<AccordionGroup>
+  <Accordion title="Scene3D" icon="box">
+    
+    ### Purpose
+    
+    Renders an animated 3D scene with floating geometric shapes using React Three Fiber. Provides visual interest and depth to sections.
+    
+    ### Key Features
+    
+    - **Three.js Integration**: Uses React Three Fiber for declarative 3D
+    - **Multiple Geometries**: Icosahedron, torus, and octahedron shapes
+    - **Automatic Animation**: Continuous rotation and floating effects
+    - **Performance Optimized**: Only renders when in viewport
+    - **Lighting System**: Ambient, spot, and point lights for dramatic effect
+    
+    ### Props
+    
+    The Scene3D component accepts no props.
+    
+    ### Import
+    
+    ```tsx
+    import { Scene3D } from '@/components/effects/Scene3D';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <section className="relative min-h-screen">
+      <Scene3D />
+      <div className="relative z-10">
+        {/* Your content here */}
+      </div>
+    </section>
+    ```
+    
+    ### Geometry Configuration
+    
+    **Icosahedron (Red distorted mesh):**
+    ```tsx
+    <Float speed={2} rotationIntensity={1} floatIntensity={1}>
+      <mesh position={[2, 0, 0]} scale={1.8}>
+        <icosahedronGeometry args={[1, 0]} />
+        <MeshDistortMaterial
+          color="#ff003c"
+          metalness={0.5}
+          distort={0.4}
+          speed={2}
+        />
+      </mesh>
+    </Float>
+    ```
+    
+    **Torus (Cyan emissive):**
+    ```tsx
+    <Float speed={1.5} rotationIntensity={2} floatIntensity={0.5}>
+      <mesh position={[-2, -1, -1]} scale={0.8}>
+        <torusGeometry args={[1, 0.3, 16, 100]} />
+        <meshStandardMaterial
+          color="#00f0ff"
+          emissive="#00f0ff"
+          emissiveIntensity={0.5}
+          roughness={0.2}
+          metalness={1}
+        />
+      </mesh>
+    </Float>
+    ```
+    
+    **Octahedron (Purple wireframe):**
+    ```tsx
+    <Float speed={3} rotationIntensity={1.5} floatIntensity={1.5}>
+      <mesh position={[-1, 2, -2]} scale={0.5}>
+        <octahedronGeometry />
+        <meshStandardMaterial
+          color="#7000ff"
+          emissive="#7000ff"
+          emissiveIntensity={2}
+          wireframe
+        />
+      </mesh>
+    </Float>
+    ```
+    
+    ### Lighting Setup
+    
+    ```tsx
+    <ambientLight intensity={0.5} />
+    <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
+    <pointLight position={[-10, -5, -10]} color="#00f0ff" intensity={5} />
+    <pointLight position={[10, 5, 5]} color="#ff003c" intensity={5} />
+    <Environment preset="city" />
+    ```
+    
+    ### Animation Loop
+    
+    ```tsx
+    function Geometry() {
+      const meshRef = useRef<any>(null);
+      
+      useFrame((state) => {
+        if (!meshRef.current) return;
+        const t = state.clock.getElapsedTime();
+        meshRef.current.rotation.x = t * 0.2;
+        meshRef.current.rotation.y = t * 0.3;
+      });
+      
+      return <group>{/* geometries */}</group>
+    }
+    ```
+    
+    ### Performance Optimization
+    
+    ```tsx
+    const { useInView } = require('framer-motion');
+    const isInView = useInView(containerRef, { margin: "200px" });
+    
+    <Canvas frameloop={isInView ? "always" : "never"}>
+      {/* Scene content */}
+    </Canvas>
+    ```
+    
+    Canvas only renders when the component is within 200px of the viewport, saving significant GPU resources.
+    
+    ### Styling
+    
+    ```tsx
+    className="absolute inset-0 pointer-events-none opacity-40 z-0"
+    ```
+    
+    - Positioned absolutely to fill container
+    - `pointer-events-none` prevents blocking user interactions
+    - Reduced opacity blends with background
+    - `z-0` keeps it behind content
+    
+    ### Dependencies
+    
+    - `@react-three/fiber`: React renderer for Three.js
+    - `@react-three/drei`: Useful helpers (Float, PerspectiveCamera, MeshDistortMaterial, Environment)
+    - `framer-motion`: Viewport detection for performance
+    
+  </Accordion>
+
+  <Accordion title="StarDust" icon="stars">
+    
+    ### Purpose
+    
+    Renders an animated particle field using HTML5 Canvas, creating an ambient starfield effect across the entire viewport.
+    
+    ### Key Features
+    
+    - **Canvas-based Particles**: 40+ floating particles with realistic motion
+    - **Radial Gradient Glow**: Subtle center glow effect
+    - **Performance Optimized**: Disabled on mobile viewports
+    - **Randomized Motion**: Each particle has unique velocity and flickering
+    - **Auto-resize**: Responds to window size changes
+    
+    ### Props
+    
+    The StarDust component accepts no props.
+    
+    ### Import
+    
+    ```tsx
+    import { StarDust } from '@/components/effects/StarDust';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <StarDust />
+            {children}
+          </body>
+        </html>
+      );
+    }
+    ```
+    
+    ### Particle System
+    
+    **Mote Interface:**
+    ```tsx
+    interface Mote {
+      x: number;      // Position X
+      y: number;      // Position Y
+      size: number;   // Particle radius (0.3-2.8px)
+      vx: number;     // Velocity X (-0.06 to 0.06)
+      vy: number;     // Velocity Y (-0.02 to 0.06, biased upward)
+      alpha: number;  // Opacity (0.1-0.6)
+      flicker: number; // Flicker rate (0.004-0.019)
+      phase: number;  // Animation phase offset
+    }
+    ```
+    
+    **Particle Spawning:**
+    ```tsx
+    function spawnMote(w: number, h: number): Mote {
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        size: Math.random() * 2.5 + 0.3,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.08 - 0.02,
+        alpha: Math.random() * 0.5 + 0.1,
+        flicker: Math.random() * 0.015 + 0.004,
+        phase: Math.random() * Math.PI * 2,
+      };
+    }
+    ```
+    
+    ### Radial Glow Effect
+    
+    ```tsx
+    const cx = cvs.width * 0.5;
+    const cy = cvs.height * 0.45;
+    const radius = Math.min(cvs.width, cvs.height) * 0.8;
+    const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+    glow.addColorStop(0, 'rgba(160, 165, 180, 0.025)');
+    glow.addColorStop(0.4, 'rgba(155, 160, 175, 0.025)');
+    glow.addColorStop(0.7, 'rgba(140, 145, 165, 0.02)');
+    glow.addColorStop(0.9, 'rgba(100, 110, 140, 0.008)');
+    glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ```
+    
+    ### Animation Loop
+    
+    ```tsx
+    function render() {
+      // Mobile performance bypass
+      if (window.innerWidth >= 768) {
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        
+        // Draw glow
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        
+        // Update and draw particles
+        for (const m of motes.current) {
+          m.x += m.vx;
+          m.y += m.vy;
+          
+          // Wrap around edges
+          if (m.x < -5) m.x = cvs.width + 5;
+          if (m.x > cvs.width + 5) m.x = -5;
+          if (m.y < -5) m.y = cvs.height + 5;
+          if (m.y > cvs.height + 5) m.y = -5;
+          
+          ctx.beginPath();
+          ctx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(220,220,230,${m.alpha})`;
+          ctx.fill();
+        }
+      }
+      
+      raf.current = requestAnimationFrame(render);
+    }
+    ```
+    
+    ### Special Particle
+    
+    One large "hero" star is added:
+    ```tsx
+    motes.current.push({
+      x: Math.random() * cvs.width,
+      y: Math.random() * cvs.height * 0.6,
+      size: 5,  // Much larger than regular particles
+      vx: 0.02,
+      vy: -0.01,
+      alpha: 0.35,
+      flicker: 0,
+      phase: 0,
+    });
+    ```
+    
+    ### Mobile Optimization
+    
+    The entire render loop is bypassed on mobile:
+    ```tsx
+    if (window.innerWidth >= 768) {
+      // Render particles
+    }
+    ```
+    
+    This prevents expensive canvas operations on devices where they would be less visible and more performance-intensive.
+    
+    ### Styling
+    
+    ```tsx
+    className="fixed inset-0 z-1 pointer-events-none"
+    aria-hidden="true"
+    ```
+    
+    - Fixed positioning covers entire viewport
+    - Low z-index keeps it behind most content
+    - Pointer events disabled
+    - Hidden from screen readers
+    
+  </Accordion>
+
+  <Accordion title="NoiseOverlay" icon="grain">
+    
+    ### Purpose
+    
+    Adds a subtle film grain texture overlay to the entire page for a premium, cinematic aesthetic.
+    
+    ### Key Features
+    
+    - **Embedded Noise Texture**: Base64-encoded PNG pattern
+    - **Performance Optimized**: Pure CSS, no JavaScript
+    - **Responsive Opacity**: Lighter on mobile, more visible on desktop
+    - **GPU Accelerated**: Uses transform-gpu for hardware acceleration
+    - **Hidden on Mobile**: Completely hidden on small screens
+    
+    ### Props
+    
+    The NoiseOverlay component accepts no props.
+    
+    ### Import
+    
+    ```tsx
+    import { NoiseOverlay } from '@/components/effects/NoiseOverlay';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <NoiseOverlay />
+            {children}
+          </body>
+        </html>
+      );
+    }
+    ```
+    
+    ### Implementation
+    
+    ```tsx
+    <div
+      className="fixed inset-0 z-[40] pointer-events-none opacity-[0.03] md:opacity-[0.05] mix-blend-normal overflow-hidden gpu transform-gpu bg-[length:50px_50px] md:bg-[length:100px_100px] max-md:hidden"
+      style={{
+        backgroundImage: `url("data:image/png;base64,...")`,
+        backgroundRepeat: 'repeat',
+      }}
+    />
+    ```
+    
+    ### Styling Breakdown
+    
+    | Class | Purpose |
+    |-------|--------|
+    | `fixed inset-0` | Full viewport coverage |
+    | `z-[40]` | Above most content but below modals |
+    | `pointer-events-none` | Click-through overlay |
+    | `opacity-[0.03] md:opacity-[0.05]` | Very subtle (3% mobile, 5% desktop) |
+    | `mix-blend-normal` | Standard blending mode |
+    | `transform-gpu` | Hardware acceleration |
+    | `bg-[length:50px_50px]` | Smaller pattern on mobile |
+    | `md:bg-[length:100px_100px]` | Larger pattern on desktop |
+    | `max-md:hidden` | Completely hidden on mobile |
+    
+    ### Base64 Image
+    
+    The component uses an embedded base64-encoded PNG image:
+    - Small file size for quick loading
+    - No external HTTP request needed
+    - Tileable pattern for seamless repetition
+    
+    ### Visual Effect
+    
+    Creates a subtle grain/noise texture that:
+    - Adds depth and texture to flat backgrounds
+    - Reduces color banding in gradients
+    - Provides a premium, film-like aesthetic
+    - Doesn't interfere with readability
+    
+    ### Performance Notes
+    
+    - Zero JavaScript overhead (pure CSS)
+    - GPU accelerated with `transform-gpu`
+    - Completely hidden on mobile to save resources
+    - Very low opacity to minimize visual overhead
+    
+  </Accordion>
+
+  <Accordion title="SmoothScroll" icon="move-vertical">
+    
+    ### Purpose
+    
+    Wraps the application with Lenis smooth scrolling for enhanced user experience with momentum-based scrolling.
+    
+    ### Key Features
+    
+    - **Momentum Scrolling**: Natural, physics-based scroll feel
+    - **Customizable Easing**: Configurable lerp (linear interpolation) factor
+    - **Touch Disabled**: Maintains native touch scrolling on mobile
+    - **Integration Ready**: Works with Framer Motion scroll animations
+    
+    ### Props
+    
+    ```tsx
+    interface SmoothScrollProps {
+      children: React.ReactNode;
+    }
+    ```
+    
+    ### Import
+    
+    ```tsx
+    import { SmoothScroll } from '@/components/effects/SmoothScroll';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <SmoothScroll>
+              <Navbar />
+              {children}
+              <Footer />
+            </SmoothScroll>
+          </body>
+        </html>
+      );
+    }
+    ```
+    
+    ### Configuration
+    
+    ```tsx
+    <ReactLenis
+      root
+      options={{
+        lerp: 0.1,          // Smoothness factor (0-1, lower = smoother)
+        duration: 1.2,      // Scroll duration multiplier
+        smoothWheel: true,  // Enable smooth wheel scrolling
+        syncTouch: false,   // Disable on touch devices
+      }}
+    >
+      {children}
+    </ReactLenis>
+    ```
+    
+    ### Configuration Options
+    
+    | Option | Value | Description |
+    |--------|-------|-------------|
+    | `lerp` | `0.1` | Linear interpolation factor (lower = smoother but slower) |
+    | `duration` | `1.2` | Base duration multiplier for scroll animations |
+    | `smoothWheel` | `true` | Enables smooth scrolling for mouse wheel |
+    | `syncTouch` | `false` | Keeps native touch scrolling on mobile devices |
+    | `root` | `true` | Uses root element as scroll container |
+    
+    ### Integration with Framer Motion
+    
+    Works seamlessly with Framer Motion scroll-triggered animations:
+    ```tsx
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
+      {/* Content */}
+    </motion.div>
+    ```
+    
+    ### Mobile Behavior
+    
+    With `syncTouch: false`, mobile devices use native scrolling:
+    - Preserves native momentum and overscroll effects
+    - Maintains optimal touch performance
+    - Avoids potential scroll blocking issues
+    
+    ### Dependencies
+    
+    - `lenis`: Core smooth scrolling library
+    - `lenis/react`: React bindings for Lenis
+    
+    ### Browser Support
+    
+    - Modern browsers (Chrome, Firefox, Safari, Edge)
+    - Graceful fallback to native scrolling if unsupported
+    
+  </Accordion>
+</AccordionGroup>
+
+## Effects Stack
+
+Typical effects implementation for the I/O Festival site:
+
+```tsx
+import { SmoothScroll } from '@/components/effects/SmoothScroll';
+import { StarDust } from '@/components/effects/StarDust';
+import { NoiseOverlay } from '@/components/effects/NoiseOverlay';
+import { Scene3D } from '@/components/effects/Scene3D';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {/* Global ambient effects */}
+        <StarDust />
+        <NoiseOverlay />
+        
+        {/* Smooth scrolling wrapper */}
+        <SmoothScroll>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </SmoothScroll>
+      </body>
+    </html>
+  );
+}
+
+// In specific sections that need 3D
+function HeroSection() {
+  return (
+    <section className="relative min-h-screen">
+      <Scene3D />
+      <div className="relative z-10">
+        {/* Content */}
+      </div>
+    </section>
+  );
+}
+```
+
+## Performance Considerations
+
+### Mobile Optimization
+
+- **StarDust**: Completely disabled on viewports < 768px
+- **NoiseOverlay**: Hidden on mobile with `max-md:hidden`
+- **Scene3D**: Only renders when in viewport (200px margin)
+- **SmoothScroll**: Disabled on touch devices with `syncTouch: false`
+
+### GPU Acceleration
+
+- **NoiseOverlay**: Uses `transform-gpu` for hardware acceleration
+- **Scene3D**: Three.js naturally uses WebGL (GPU)
+- **StarDust**: Canvas 2D rendering
+
+### Memory Management
+
+```tsx
+// StarDust cleanup
+useEffect(() => {
+  // ... setup
+  return () => {
+    cancelAnimationFrame(raf.current);
+    window.removeEventListener('resize', resize);
+  };
+}, []);
+
+// Scene3D cleanup
+useEffect(() => {
+  const galleryApp = new WebGLGallery(...);
+  return () => {
+    galleryApp.destroy();
+  };
+}, []);
+```
+
+## Z-Index Hierarchy
+
+```
+z-999:   Preloader
+z-[60]:  Navbar
+z-[61]:  Dropdown menus
+z-[40]:  NoiseOverlay
+z-20:    Scroll indicator
+z-10:    Content layers
+z-1:     StarDust
+z-0:     Scene3D
+```
+
+This layering ensures effects stay in the background while interactive elements remain accessible.

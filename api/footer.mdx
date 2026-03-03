@@ -1,0 +1,202 @@
+---
+title: 'Footer'
+description: 'Site footer with branding, navigation links, competition listings, and contact information'
+---
+
+# Footer
+
+A comprehensive footer component featuring multi-column layout with brand information, navigation links, competition listings, and social contact options.
+
+## Import
+
+```tsx
+import { Footer } from '@/components/layout/Footer';
+```
+
+## Features
+
+- **Multi-column grid layout**: 12-column responsive grid
+- **Brand showcase**: Logo display with partner organizations
+- **Quick navigation**: Links to key sections and pages
+- **Competition directory**: Links to all competition tracks
+- **Social integration**: Instagram, LINE, and email contacts
+- **Gradient overlay**: Subtle cyan gradient for visual depth
+- **Responsive design**: Stacks to single column on mobile
+
+## Props
+
+This component accepts no props - it's a standalone footer implementation.
+
+## Usage Example
+
+```tsx
+import { Footer } from '@/components/layout/Footer';
+
+export default function Layout({ children }) {
+  return (
+    <>
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+}
+```
+
+## Internal Configuration
+
+The Footer uses two configuration arrays for links:
+
+### Quick Links
+
+```typescript
+const quickLinks = [
+  { name: 'Schedule', href: '/#timeline' },
+  { name: 'FAQ', href: '/#faq' },
+  { name: 'Resources', href: '/kelengkapan' },
+  { name: 'Register', href: '/kelengkapan' },
+];
+```
+
+### Competition Links
+
+```typescript
+const competitionLinks = [
+  { name: 'UI/UX Design', href: '/kompetisi/ui-ux' },
+  { name: 'Web Development', href: '/kompetisi/web-dev' },
+  { name: 'Business Case', href: '/kompetisi/business-case' },
+];
+```
+
+## Structure
+
+### Layout Grid (12 columns)
+
+1. **Brand Section** (col-span-4):
+   - I/O Festival logo
+   - Event description
+   - Partner logos (FTI UNTAR, BEM FTI)
+
+2. **Quick Links** (col-span-2, starting at col-6):
+   - Navigation to main sections
+   - Registration link
+
+3. **Competition** (col-span-2):
+   - Links to all competition tracks
+
+4. **Contact** (col-span-3, starting at col-10):
+   - Social media links
+   - Email contact
+
+### Bottom Bar
+
+Separate section with:
+- Copyright notice
+- Rights statement
+- Flexbox layout (space-between)
+
+## Visual Design
+
+### Background Effects
+
+```tsx
+// Border
+border-top: 1px solid rgba(255, 255, 255, 0.1)
+background: black
+
+// Gradient overlay
+background: linear-gradient(to top, rgba(6, 90, 109, 0.1), transparent)
+```
+
+### Typography
+
+- **Section headers**: 10px uppercase mono font, 0.2em letter-spacing
+- **Link text**: 14px with 50% opacity, full white on hover
+- **Description**: 14px leading-relaxed, 40% opacity
+- **Copyright**: 12px mono font, 30% opacity
+
+### Spacing
+
+- Main content padding: `px-6` horizontal
+- Max width: 6xl (72rem / 1152px)
+- Grid gap: 10 (2.5rem)
+- Section padding: `py-14` vertical
+
+## Contact Information
+
+### Social Media
+
+<ParamField path="Instagram" type="link">
+  @iofest.untar - Official Instagram account
+  
+  URL: `https://instagram.com/iofest.untar`
+</ParamField>
+
+<ParamField path="LINE" type="link">
+  LINE Official - Direct messaging support
+  
+  Note: Currently placeholder link (needs implementation)
+</ParamField>
+
+<ParamField path="Email" type="link">
+  iobemftiuntar@gmail.com - Official email contact
+  
+  Opens default mail client with `mailto:` link
+</ParamField>
+
+## Partner Logos
+
+Displays three logos in the brand section:
+
+1. **I/O Festival Logo** (`logo-io.webp`)
+   - Height: 40px (10rem)
+   - Primary brand identifier
+
+2. **FTI UNTAR Logo** (`LOGO FTI UNTAR.png`)
+   - Height: 32px (8rem)
+   - 50% opacity
+   - Partner organization
+
+3. **BEM FTI Logo** (`logo bem fti white.png`)
+   - Height: 32px (8rem)
+   - 50% opacity
+   - Event organizer
+
+## Responsive Behavior
+
+### Desktop (> 768px)
+- 12-column grid layout
+- 4 distinct sections side-by-side
+- Horizontal bottom bar
+
+### Mobile (< 768px)
+- Single column stack
+- Sections ordered: Brand → Quick Links → Competition → Contact
+- Vertical bottom bar
+
+## Interactive Elements
+
+All links feature:
+- `transition-colors` for smooth hover effects
+- Color shift from `white/50` to `white` on hover
+- Icon + text combinations for contact links
+- `target="_blank"` for external social links
+- `rel="noopener noreferrer"` for security
+
+## Dependencies
+
+- `next/link`: Optimized internal navigation
+- `next/image`: Optimized image loading
+- `lucide-react`: Icon components (Instagram, MessageCircle, Mail)
+
+## Accessibility
+
+- Semantic `<footer>` element
+- Descriptive link text
+- `alt` attributes on logo images
+- External link attributes for security
+- Sufficient color contrast (WCAG compliant)
+
+## Related Components
+
+- [Navbar](/api/navbar) - Navigation bar
+- [Hero](/api/hero) - Landing hero section

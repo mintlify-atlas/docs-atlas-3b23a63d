@@ -1,0 +1,144 @@
+---
+title: Project Structure
+description: Organization and architecture of the I/O Festival 2026 codebase
+---
+
+The I/O Festival 2026 website follows the Next.js 16 App Router architecture with a well-organized directory structure.
+
+## Root Directory
+
+The project root contains configuration files and source directories:
+
+```
+it-competition-web/
+├── src/                   # Application source code
+├── public/                # Static assets
+├── next.config.ts         # Next.js configuration
+├── tsconfig.json          # TypeScript configuration
+├── eslint.config.mjs      # ESLint configuration
+├── postcss.config.mjs     # PostCSS configuration
+├── components.json        # shadcn/ui configuration
+├── package.json           # Project dependencies
+└── .gitignore            # Git ignore rules
+```
+
+## Source Directory (`src/`)
+
+The main application code is organized under the `src/` directory:
+
+### App Directory (`src/app/`)
+
+Follows Next.js 16 App Router conventions:
+
+```
+src/app/
+├── layout.tsx            # Root layout with providers
+├── page.tsx              # Homepage
+├── globals.css           # Global styles and Tailwind imports
+├── loading.tsx           # Global loading UI
+├── error.tsx             # Error boundary
+├── not-found.tsx         # 404 page
+├── robots.ts             # Robots.txt generation
+├── sitemap.ts            # Sitemap generation
+├── favicon.ico           # Site favicon
+├── fonts/                # Custom font files
+├── kompetisi/            # Competition pages
+│   ├── page.tsx         # Competitions listing
+│   ├── [category]/      # Dynamic category routes
+│   └── [category]/[slug]/ # Individual competition pages
+└── kelengkapan/          # Registration requirements
+    └── page.tsx
+```
+
+### Components Directory (`src/components/`)
+
+Reusable React components organized by purpose:
+
+```
+src/components/
+├── effects/              # Visual effects and animations
+├── layout/               # Layout components (header, footer, nav)
+├── pages/                # Page-specific components
+├── sections/             # Homepage sections and major UI blocks
+└── ui/                   # shadcn/ui components
+```
+
+**Component Categories:**
+
+- **effects/** - WebGL, 3D, and animation components
+- **layout/** - Structural components used across pages
+- **pages/** - Components specific to individual pages
+- **sections/** - Large content sections (hero, about, timeline, etc.)
+- **ui/** - Base UI components from shadcn/ui
+
+### Library Directory (`src/lib/`)
+
+Utility functions and shared logic:
+
+```
+src/lib/
+├── utils.ts              # General utility functions
+├── competitions.ts       # Competition data and helpers
+├── WebGLGallery.ts       # WebGL gallery implementation
+└── glsl.ts               # GLSL shader utilities
+```
+
+## Public Directory
+
+Static assets served directly:
+
+```
+public/
+├── assets/
+│   ├── element/          # UI element images
+│   └── logo/             # Logo variations
+└── covers/               # Competition cover images
+```
+
+## Path Aliases
+
+The project uses TypeScript path aliases for cleaner imports:
+
+```typescript
+import { Button } from "@/components/ui/button";
+import { competitions } from "@/lib/competitions";
+import { cn } from "@/lib/utils";
+```
+
+The `@/` alias maps to the `src/` directory, configured in `tsconfig.json:22`.
+
+## Key Files
+
+### Root Layout (`src/app/layout.tsx:1`)
+
+Defines the application shell with:
+- Theme provider (light/dark mode)
+- Smooth scroll with Lenis
+- Global metadata and fonts
+- Analytics and SEO tags
+
+### Global Styles (`src/app/globals.css:1`)
+
+Contains:
+- Tailwind CSS directives
+- CSS custom properties for theming
+- Global styles and resets
+- Animation definitions
+
+### Competition Data (`src/lib/competitions.ts:1`)
+
+Centralized competition configuration including:
+- Categories and metadata
+- Registration details
+- Timeline information
+- Prize structure
+
+## Build Output
+
+Next.js generates build artifacts in:
+
+- `.next/` - Production build output and cache
+- `out/` - Static export output (if configured)
+- `build/` - Alternative build directory
+
+These directories are excluded from version control via `.gitignore:17-21`.

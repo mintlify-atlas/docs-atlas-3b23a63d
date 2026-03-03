@@ -1,0 +1,112 @@
+---
+title: 'Navbar'
+description: 'Fixed navigation bar with scroll effects, dropdown menu, and mobile responsive design'
+---
+
+# Navbar
+
+A fully responsive navigation component with glassmorphic design, scroll-based animations, and a mega dropdown menu for competition links.
+
+## Import
+
+```tsx
+import { Navbar } from '@/components/layout/Navbar';
+```
+
+## Features
+
+- **Scroll-responsive design**: Transforms from full-width to compact floating navbar on scroll
+- **Mega dropdown menu**: Featured competition listings with icons and badges
+- **Mobile-first**: Full-screen overlay menu for mobile devices
+- **Smooth animations**: Framer Motion powered transitions and entrance effects
+- **Glassmorphism**: Backdrop blur and gradient borders for modern aesthetic
+- **Smart hover states**: Delayed dropdown close for better UX
+
+## Props
+
+This component accepts no props - it's a standalone navigation implementation.
+
+## Usage Example
+
+```tsx
+import { Navbar } from '@/components/layout/Navbar';
+
+export default function Layout({ children }) {
+  return (
+    <>
+      <Navbar />
+      <main>{children}</main>
+    </>
+  );
+}
+```
+
+## Internal Configuration
+
+The Navbar component uses internal configuration arrays:
+
+### Navigation Items
+
+```typescript
+const navItems = [
+  { name: 'Competition', href: '/#tracks', hasDropdown: true },
+  { name: 'Schedule', href: '/#timeline' },
+  { name: 'FAQ', href: '/#faq' },
+  { name: 'Resources', href: '/kelengkapan' },
+];
+```
+
+### Competition Data
+
+The dropdown menu pulls from `@/lib/competitions` which contains:
+- Competition title, slug, and tagline
+- Icon component and color scheme
+- Optional badge (e.g., "NEW")
+
+## Behavior
+
+### Scroll States
+
+**Not Scrolled** (y < 50px):
+- Full-width bar with bottom border
+- Larger logo (h-14) and text (text-base)
+- `bg-black/40` with `border-b border-white/5`
+
+**Scrolled** (y > 50px):
+- Compact floating navbar with rounded corners
+- Smaller logo (h-10) and text (text-sm)
+- `bg-black/30` with full border and shadow
+- Max width of 4xl with horizontal padding
+
+### Animation Timing
+
+- **Entrance**: 800ms with custom easing `[0.16, 1, 0.3, 1]`
+- **Scroll transition**: 700ms ease-in when scrolling down, 300ms when scrolling up
+- **Dropdown**: 200ms fade with 4px vertical motion
+
+### Mobile Menu
+
+Activates on `md` breakpoint (< 768px):
+- Full-screen overlay with `bg-black/95` backdrop
+- Collapsible competition submenu
+- Large touch-friendly text (3xl)
+- Animated entrance/exit with Framer Motion
+
+## Dependencies
+
+- `framer-motion`: Animation library
+- `lucide-react`: Icon components (Menu, X, ChevronDown, ArrowRight)
+- `next/link` and `next/image`: Next.js optimizations
+- `@/lib/competitions`: Competition data configuration
+
+## Accessibility
+
+- Semantic `<nav>` element
+- `aria-label` attributes on logo link and mobile toggle
+- Keyboard navigable links
+- Focus states on interactive elements
+
+## Related Components
+
+- [Footer](/api/footer) - Site footer component
+- [Hero](/api/hero) - Landing hero section

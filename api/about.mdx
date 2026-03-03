@@ -1,0 +1,69 @@
+---
+title: About
+description: API reference for the About section component
+---
+
+The About section displays the festival's mission statement and three core pillars (Akademik, Festival, Publikasi) in an animated glass-card layout.
+
+## Import
+
+```tsx
+import { About } from '@/components/sections/About';
+```
+
+## Usage
+
+```tsx
+export default function Home() {
+  return (
+    <main>
+      <About />
+    </main>
+  );
+}
+```
+
+## Props
+
+This component does not accept any props.
+
+## Features
+
+- **Dual-column layout**: Tagline on the left, pillar cards on the right
+- **Framer Motion animations**: Staggered entrance animations with viewport detection
+- **Glass-card design**: Translucent cards with hover effects
+- **Lucide icons**: GraduationCap, PartyPopper, and Megaphone icons for each pillar
+- **Responsive typography**: Scales from mobile to desktop with custom Raela font
+- **Impact Projection highlight**: Emphasizes the key evaluation criteria
+
+## Data Structure
+
+The component uses an internal `pillars` array:
+
+```tsx
+const pillars = [
+  {
+    icon: GraduationCap,
+    title: "Akademik",
+    description: "Kami mewadahi bakat pelajar dari seluruh Indonesia..."
+  },
+  {
+    icon: PartyPopper,
+    title: "Festival",
+    description: "Acara ini menghadirkan pameran dan presentasi interaktif..."
+  },
+  {
+    icon: Megaphone,
+    title: "Publikasi",
+    description: "Acara ini memperkenalkan kiprah FTI UNTAR..."
+  }
+];
+```
+
+## Styling
+
+- Uses Tailwind CSS with custom glassmorphism utilities
+- Custom `.glass-card` class for translucent backgrounds
+- Neon blue accent color for icons (`text-neon-blue`)
+- Viewport-triggered animations with 800px bottom margin
+- Group hover effects for scale transformations

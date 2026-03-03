@@ -1,0 +1,285 @@
+---
+title: Layout Components
+description: Core layout components for navigation, footer, and loading states
+icon: layout-panel-top
+---
+
+Layout components provide the structural foundation of the I/O Festival 2026 website. These components handle navigation, footer content, and initial loading experiences.
+
+## Components
+
+<AccordionGroup>
+  <Accordion title="Navbar" icon="navigation">
+    
+    ### Purpose
+    
+    The Navbar component provides site-wide navigation with a glassmorphic design that adapts based on scroll position. It features a mega dropdown menu for competition categories, mobile responsive menu, and smooth animations.
+    
+    ### Key Features
+    
+    - **Scroll-adaptive Design**: Changes appearance when scrolling (padding, size, styling)
+    - **Mega Dropdown Menu**: Displays all competitions with icons and descriptions
+    - **Mobile Optimized**: Full-screen mobile menu with animated transitions
+    - **Smooth Animations**: Uses Framer Motion for entrance and state transitions
+    
+    ### Props
+    
+    The Navbar component accepts no props - it's a self-contained navigation solution.
+    
+    ### Import
+    
+    ```tsx
+    import { Navbar } from '@/components/layout/Navbar';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <Navbar />
+            {children}
+          </body>
+        </html>
+      );
+    }
+    ```
+    
+    ### State Management
+    
+    The component internally manages:
+    - `isOpen`: Mobile menu open/closed state
+    - `isScrolled`: Tracks scroll position for styling changes (triggers at 50px)
+    - `showDropdown`: Desktop mega menu visibility
+    - `mobileCompOpen`: Mobile competition submenu state
+    
+    ### Styling Behavior
+    
+    **Default State** (not scrolled):
+    ```tsx
+    // Full width, larger padding
+    rounded-none px-12 py-5 bg-black/40
+    ```
+    
+    **Scrolled State**:
+    ```tsx
+    // Compact, contained design
+    rounded-2xl px-6 py-3 bg-black/30 max-w-4xl
+    border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]
+    ```
+    
+    ### Animation Details
+    
+    Initial entrance animation:
+    ```tsx
+    initial={{ y: -100, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    ```
+    
+    ### Integration Notes
+    
+    - Reads competition data from `@/lib/competitions`
+    - Uses `lucide-react` icons
+    - Fixed positioning with `z-[60]` to stay above content
+    - Dropdown has `z-61` to appear above navbar itself
+    
+  </Accordion>
+
+  <Accordion title="Footer" icon="layout-panel-bottom">
+    
+    ### Purpose
+    
+    The Footer component provides site-wide footer content including branding, navigation links, competition links, and contact information.
+    
+    ### Key Features
+    
+    - **Multi-column Layout**: Organized grid structure (12-column system)
+    - **Quick Links**: Fast access to main site sections
+    - **Competition Directory**: Links to all competition pages
+    - **Contact Information**: Social media and email links
+    - **Branding**: Display of partner logos (FTI UNTAR, BEM FTI)
+    
+    ### Props
+    
+    The Footer component accepts no props.
+    
+    ### Import
+    
+    ```tsx
+    import { Footer } from '@/components/layout/Footer';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <Navbar />
+            {children}
+            <Footer />
+          </body>
+        </html>
+      );
+    }
+    ```
+    
+    ### Content Structure
+    
+    **Quick Links:**
+    - Schedule (/#timeline)
+    - FAQ (/#faq)
+    - Resources (/kelengkapan)
+    - Register (/kelengkapan)
+    
+    **Competition Links:**
+    - UI/UX Design (/kompetisi/ui-ux)
+    - Web Development (/kompetisi/web-dev)
+    - Business Case (/kompetisi/business-case)
+    
+    **Contact Methods:**
+    - Instagram: @iofest.untar
+    - LINE Official
+    - Email: iobemftiuntar@gmail.com
+    
+    ### Styling
+    
+    ```tsx
+    // Main container
+    border-t border-white/10 bg-black
+    
+    // Gradient overlay
+    bg-gradient-to-t from-cyan-900/10 to-transparent
+    ```
+    
+  </Accordion>
+
+  <Accordion title="Preloader" icon="loader">
+    
+    ### Purpose
+    
+    The Preloader component displays a brief animated loading screen on initial page load, showing the I/O Festival logo with smooth fade transitions.
+    
+    ### Key Features
+    
+    - **Phased Animation**: Multi-stage animation (logo-in → logo-out → bg-out → done)
+    - **Smooth Transitions**: Coordinated fade effects using Framer Motion
+    - **Auto-removal**: Automatically unmounts after animation completes
+    - **High Priority**: Uses Next.js Image `priority` prop for immediate loading
+    
+    ### Props
+    
+    The Preloader component accepts no props.
+    
+    
+    ### Import
+    
+    ```tsx
+    import { Preloader } from '@/components/layout/Preloader';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    'use client';
+    
+    export default function RootLayout({ children }) {
+      return (
+        <html>
+          <body>
+            <Preloader />
+            {children}
+          </body>
+        </html>
+      );
+    }
+    ```
+    
+    ### Animation Timeline
+    
+    | Phase | Timing | Description |
+    |-------|--------|-------------|
+    | `logo-in` | 0-400ms | Logo fades in and scales to normal size |
+    | `logo-out` | 400-700ms | Logo fades out with slight scale/position shift |
+    | `bg-out` | 700-1000ms | Background fades to transparent |
+    | `done` | 1000ms+ | Component unmounts (returns `null`) |
+    
+    ### Animation Configuration
+    
+    **Logo Animation:**
+    ```tsx
+    animate={{
+      opacity: phase === 'logo-in' ? 1 : 0,
+      scale: phase === 'logo-in' ? 1 : 1.05,
+      y: phase === 'logo-in' ? 0 : -10,
+    }}
+    initial={{ opacity: 0, scale: 0.9, y: 5 }}
+    transition={{ duration: 0.8, ease: 'easeInOut' }}
+    ```
+    
+    **Background Animation:**
+    ```tsx
+    animate={{
+      opacity: phase === 'bg-out' ? 0 : 1,
+    }}
+    transition={{ duration: 0.8, ease: 'easeInOut' }}
+    ```
+    
+    ### Styling
+    
+    ```tsx
+    // Full screen overlay with maximum z-index
+    fixed inset-0 z-999 bg-black
+    flex items-center justify-center
+    ```
+    
+    ### Implementation Notes
+    
+    - Uses `useState` to manage animation phases
+    - Uses `useEffect` with setTimeout to trigger phase transitions
+    - Cleans up timers on unmount to prevent memory leaks
+    - Returns `null` when animation completes to remove from DOM
+    
+  </Accordion>
+</AccordionGroup>
+
+## Layout Pattern
+
+Typical layout structure for the I/O Festival site:
+
+```tsx
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
+import { Preloader } from '@/components/layout/Preloader';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="id">
+      <body>
+        <Preloader />
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
+```
+
+## Responsive Design
+
+All layout components are fully responsive:
+
+- **Navbar**: Transforms into hamburger menu on mobile with full-screen overlay
+- **Footer**: Stacks columns vertically on mobile devices
+- **Preloader**: Scales logo appropriately for all screen sizes
+
+## Accessibility
+
+- **Navbar**: Includes `aria-label` attributes for navigation elements
+- **Footer**: Semantic HTML structure with proper heading hierarchy
+- **Preloader**: Uses `alt` text on logo image for screen readers

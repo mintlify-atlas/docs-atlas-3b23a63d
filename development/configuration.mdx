@@ -1,0 +1,250 @@
+---
+title: Configuration
+description: Configuration files and build settings for the project
+---
+
+The I/O Festival 2026 project uses multiple configuration files to control TypeScript compilation, Next.js behavior, code quality, and styling.
+
+## Next.js Configuration
+
+### `next.config.ts`
+
+The Next.js configuration enables several performance and React optimizations:
+
+```typescript
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  compress: true,
+  reactStrictMode: true,
+  reactCompiler: true,
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+  },
+};
+
+export default nextConfig;
+```
+
+**Configuration Options:**
+
+<AccordionGroup>
+  <Accordion title="compress">
+    Enables gzip compression for responses. Improves load times by reducing asset sizes sent over the network.
+  </Accordion>
+  
+  <Accordion title="reactStrictMode">
+    Activates React's Strict Mode for additional development checks:
+    - Identifies unsafe lifecycles
+    - Warns about legacy API usage
+    - Detects unexpected side effects
+  </Accordion>
+  
+  <Accordion title="reactCompiler">
+    Enables the new React Compiler for automatic optimization:
+    - Auto-memoization of components
+    - Improved render performance
+    - Requires `babel-plugin-react-compiler` package
+  </Accordion>
+  
+  <Accordion title="experimental.optimizePackageImports">
+    Optimizes imports from specified packages by only bundling used components:
+    - `framer-motion` - Animation library optimization
+    - `lucide-react` - Icon library tree-shaking
+    
+    Reduces bundle size by eliminating unused code from these large libraries.
+  </Accordion>
+</AccordionGroup>
+
+## TypeScript Configuration
+
+### `tsconfig.json`
+
+TypeScript compiler options for the project:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+```
+
+**Key Settings:**
+
+- **target: ES2017** - Compiles to ES2017 syntax for broad browser support
+- **strict: true** - Enables all strict type-checking options
+- **noEmit: true** - TypeScript only type-checks; Next.js handles transpilation
+- **moduleResolution: bundler** - Uses modern bundler resolution strategy
+- **paths** - Defines `@/` alias pointing to `src/` directory
+- **jsx: react-jsx** - Uses automatic JSX runtime (no React imports needed)
+- **incremental: true** - Speeds up subsequent compilations
+
+### Path Aliases
+
+The `@/*` path alias enables clean imports:
+
+```typescript
+// Instead of:
+import { Button } from "../../../components/ui/button";
+
+// You can write:
+import { Button } from "@/components/ui/button";
+```
+
+## ESLint Configuration
+
+### `eslint.config.mjs`
+
+ESLint setup using the new flat config format:
+
+```javascript
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    ".archive/**",
+  ]),
+]);
+
+export default eslintConfig;
+```
+
+**Included Configurations:**
+
+- **eslint-config-next/core-web-vitals** - Next.js best practices and Core Web Vitals rules
+- **eslint-config-next/typescript** - TypeScript-specific linting rules
+
+**Ignored Directories:**
+
+- `.next/` - Next.js build output
+- `out/` - Static export directory
+- `build/` - Production build artifacts
+- `next-env.d.ts` - Generated TypeScript definitions
+- `.archive/` - Archived code
+
+## PostCSS Configuration
+
+### `postcss.config.mjs`
+
+Minimal PostCSS setup for Tailwind CSS v4:
+
+```javascript
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+```
+
+Tailwind CSS v4 uses the new PostCSS plugin architecture for improved performance and simplified configuration.
+
+## shadcn/ui Configuration
+
+### `components.json`
+
+Configuration for the shadcn/ui component system:
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {}
+}
+```
+
+**Settings:**
+
+- **style: new-york** - Uses the New York design style variant
+- **rsc: true** - Generates React Server Components
+- **tsx: true** - Uses TypeScript for components
+- **baseColor: neutral** - Default neutral color palette
+- **cssVariables: true** - Uses CSS custom properties for theming
+- **iconLibrary: lucide** - Lucide React for icons
+
+## Git Configuration
+
+### `.gitignore`
+
+Version control exclusions:
+
+```
+# Dependencies
+/node_modules
+
+# Next.js
+/.next/
+/out/
+
+# Build
+/build
+
+# Environment
+.env*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Archived code
+.archive
+```
+
+See the full `.gitignore:1` file for complete exclusions.

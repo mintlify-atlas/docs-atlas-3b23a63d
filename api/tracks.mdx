@@ -1,0 +1,84 @@
+---
+title: Tracks
+description: API reference for the Tracks section component displaying competition categories
+---
+
+The Tracks section showcases the three competition categories (UI/UX Design, Web Development, Business Case) with glassmorphic cards and gradient accents.
+
+## Import
+
+```tsx
+import { Tracks } from '@/components/sections/Tracks';
+```
+
+## Usage
+
+```tsx
+export default function Home() {
+  return (
+    <main>
+      <Tracks />
+    </main>
+  );
+}
+```
+
+## Props
+
+This component does not accept any props.
+
+## Features
+
+- **Three-column grid**: Responsive layout for competition tracks
+- **Glassmorphic cards**: Advanced backdrop blur with gradient borders
+- **Accent glow effects**: Color-specific hover glows per track
+- **Icon badges**: Gradient-bordered icon containers
+- **CTA buttons**: High-contrast registration buttons with shimmer animations
+- **Next.js Link integration**: Client-side navigation to competition detail pages
+- **Lucide icons**: Palette, Code2, and Briefcase icons
+
+## Track Data Structure
+
+```tsx
+const tracks = [
+  {
+    icon: Palette,
+    title: 'UI/UX Design',
+    description: 'Rancang antarmuka dan pengalaman pengguna...',
+    color: 'from-neon-purple to-purple-600',
+    accentHex: '#a64dff',
+    href: '/kompetisi/ui-ux',
+  },
+  {
+    icon: Code2,
+    title: 'Web Development',
+    description: 'Bangun sebuah layanan website fungsional...',
+    color: 'from-neon-blue to-blue-600',
+    accentHex: '#55D5E7',
+    href: '/kompetisi/web-dev',
+  },
+  {
+    icon: Briefcase,
+    title: 'Business Case',
+    description: 'Susun rencana bisnis berbasis teknologi...',
+    color: 'from-neon-orange to-orange-600',
+    accentHex: '#ff8c42',
+    href: '/kompetisi/business-case',
+  }
+];
+```
+
+## Styling
+
+- **Gradient borders**: Implemented with CSS mask compositing
+- **Backdrop blur**: 16px blur with transparent white background
+- **Shimmer animation**: Infinite shimmer effect on button hover
+- **Responsive sizing**: From single column on mobile to three columns on desktop
+- **Accent-specific shadows**: Dynamic box shadows based on track color
+
+## Animation Details
+
+- Viewport-triggered with 800px bottom margin
+- Staggered delays (0.1s per card)
+- Scale transformation on card hover (1.02x)
+- Icon scale on hover (1.1x)

@@ -1,0 +1,170 @@
+---
+title: 'Hero'
+description: 'Full-screen hero section with animated title, countdown timer, and decorative 3D elements'
+---
+
+# Hero
+
+A visually stunning hero section featuring glassmorphic design, animated gradient text, floating 3D elements, and an integrated countdown timer.
+
+## Import
+
+```tsx
+import { Hero } from '@/components/sections/Hero';
+```
+
+## Features
+
+- **Full-screen layout**: Min-height viewport with centered content
+- **Animated light leaks**: Pure CSS keyframe animations for performance
+- **3D decorative elements**: Strategically placed images with opacity and rotation
+- **Glassmorphism**: Backdrop blur wrapper with gradient borders
+- **Gradient text**: Multi-color gradient on "FESTIVAL" text
+- **Integrated countdown**: Live countdown component for event date
+- **Scroll indicator**: Animated chevron at bottom
+- **Responsive design**: Adapts layout from mobile to desktop
+
+## Props
+
+This component accepts no props - it's a standalone hero implementation.
+
+## Usage Example
+
+```tsx
+import { Hero } from '@/components/sections/Hero';
+
+export default function HomePage() {
+  return (
+    <>
+      <Hero />
+      {/* Rest of page content */}
+    </>
+  );
+}
+```
+
+## Structure
+
+### Main Sections
+
+1. **Background Layer** (z-0):
+   - Three animated gradient orbs (purple, orange, cyan)
+   - 10+ strategically placed 3D element images
+   - Pure CSS animations for zero-JS rendering
+
+2. **Content Layer** (z-10):
+   - Glassmorphic container with gradient border
+   - 12-column grid layout (7 cols text + 5 cols countdown)
+   - Title, description, and CTA button
+   - Countdown component
+
+3. **Scroll Indicator** (z-20):
+   - Animated ChevronDown icon
+   - Appears after 1.2s delay
+
+## Visual Effects
+
+### Light Leak Animations
+
+```css
+@keyframes hero-glow-1 {
+  0%, 100% { transform: translate(0px, 0px); opacity: 0.35; }
+  50% { transform: translate(30px, -20px); opacity: 0.5; }
+}
+```
+
+Three independent glow animations with varying durations (10s, 12s, 14s) create organic movement.
+
+### Title Gradient
+
+```tsx
+backgroundImage: 'linear-gradient(135deg, #a64dff 0%, #ffffff 25%, #ff8c42 50%, #55D5E7 75%, #ffffff 100%)'
+```
+
+Animated gradient applied to "FESTIVAL" text using `bg-clip-text`.
+
+### Glassmorphism Container
+
+```tsx
+background: 'rgba(255, 255, 255, 0)'
+boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1), inset 0 2px 2px 0 rgba(255, 255, 255, 0.4)'
+backdrop-blur: 2xl (24px)
+```
+
+## Content
+
+### Title
+
+- **Font**: Raela (custom font)
+- **Size**: Responsive from 6xl to 9rem
+- **Animation**: 700ms fade-up entrance
+- **Structure**: "I/O" (white) + "FESTIVAL" (gradient)
+
+### Description
+
+```text
+FTI UNTAR menyelenggarakan kompetisi teknologi tingkat nasional. 
+Peserta dapat memilih tiga cabang kompetisi.
+```
+
+- 600ms entrance delay (0.15s)
+- White with 50% opacity
+- Max width constraint for readability
+
+### CTA Button
+
+- Links to `#tracks` section
+- White background with black text
+- Hover effect on arrow icon
+- 600ms entrance delay (0.3s)
+
+## 3D Element Positioning
+
+Elements are organized in clusters:
+
+- **Top left**: 2 elements (ELEMEN 2, 9)
+- **Top right**: 2 elements (ELEMEN 5, 6)
+- **Bottom left**: 2 elements (ELEMEN 7, 10)
+- **Bottom right**: 2 elements (ELEMEN 8, 10)
+- **Center/Midground**: 4 elements (behind glass, z-index: -10)
+- **Stars**: Scattered decorative elements
+
+All elements use:
+- Responsive sizing (`vw` on mobile, fixed on desktop)
+- Rotation transforms
+- Opacity variations (0.2-0.6)
+- `priority` loading for above-fold images
+
+## Responsive Breakpoints
+
+- **Mobile** (< 768px): Simplified layout, fewer decorative elements, smaller text
+- **Tablet** (768px - 1024px): Medium text sizes, full decoration
+- **Desktop** (> 1024px): Largest text, full visual effects
+
+## Performance Optimizations
+
+- **Pure CSS animations**: Avoid JavaScript animation overhead
+- **transform-gpu**: Hardware acceleration for animations
+- **will-change**: Optimize for transform and opacity changes
+- **Next.js Image**: Automatic optimization and lazy loading
+- **Priority loading**: Above-fold images load first
+
+## Dependencies
+
+- `framer-motion`: React animation library
+- `lucide-react`: Icon components (ArrowRight, ChevronDown)
+- `next/image`: Optimized image component
+- `@/components/sections/Countdown`: Countdown timer component
+
+## Accessibility
+
+- Semantic `<section>` element
+- Empty `alt` attributes on decorative images
+- Focus states on interactive CTA
+- Sufficient color contrast on text
+
+## Related Components
+
+- [Navbar](/api/navbar) - Navigation bar
+- [Footer](/api/footer) - Site footer
+- Countdown - Event countdown timer (imported internally)

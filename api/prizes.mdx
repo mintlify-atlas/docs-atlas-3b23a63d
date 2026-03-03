@@ -1,0 +1,80 @@
+---
+title: Prizes
+description: API reference for the Prizes section component with animated counter
+---
+
+The Prizes section displays the total prize pool with an animated counter that counts up to Rp 46,000,000 when scrolled into view.
+
+## Import
+
+```tsx
+import { Prizes } from '@/components/sections/Prizes';
+```
+
+## Usage
+
+```tsx
+export default function Home() {
+  return (
+    <main>
+      <Prizes />
+    </main>
+  );
+}
+```
+
+## Props
+
+This component does not accept any props.
+
+## Features
+
+- **Animated counter**: Counts from 0 to 46,000,000 over 1.2 seconds
+- **Indonesian number formatting**: Uses `Intl.NumberFormat('id-ID')` for proper locale
+- **Viewport detection**: Animation triggers when section enters viewport
+- **Glassmorphic plaque**: Premium glass effect with backdrop blur
+- **Gradient text**: Multi-color gradient from blue to purple to orange
+- **Hover interaction**: Subtle scale and background changes
+
+## Animation Details
+
+The component uses Framer Motion's `useMotionValue` and `useTransform` hooks:
+
+```tsx
+const count = useMotionValue(0);
+const roundedDisplay = useTransform(count, (latest) => {
+  return "Rp " + new Intl.NumberFormat('id-ID').format(Math.round(latest));
+});
+
+useEffect(() => {
+  if (isInView) {
+    const controls = animate(count, 46000000, { 
+      duration: 1.2, 
+      ease: "easeOut"
+    });
+    return controls.stop;
+  }
+}, [isInView, count]);
+```
+
+## Styling
+
+- **Background glow**: Cyan blur effect (60vw diameter)
+- **Glass plaque**: `backdrop-blur-md` with `bg-white/[0.03]`
+- **Border**: `border-white/10` with hover transition to `border-white/20`
+- **Text gradient**: `from-neon-blue via-neon-purple to-neon-orange`
+- **Responsive font size**: From `12vw` on mobile to `10rem` on xl screens
+- **Shadow**: `shadow-2xl` for depth
+
+## Viewport Configuration
+
+- **Trigger once**: Animation only plays on first scroll into view
+- **Margin**: 200px bottom margin for early trigger
+- **Duration**: 1.2 seconds with easeOut easing
+
+## Hover States
+
+- Scale: 1.02x on hover
+- Background opacity: Increases from 0.03 to 0.05
+- Border opacity: Increases from 0.1 to 0.2
+- Spring animation: Stiffness 400, damping 30

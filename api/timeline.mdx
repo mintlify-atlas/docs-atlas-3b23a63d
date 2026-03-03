@@ -1,0 +1,89 @@
+---
+title: Timeline
+description: API reference for the Timeline section component showing event schedule
+---
+
+The Timeline section displays the I/O Festival 2026 schedule in a vertical timeline layout with alternating sides on desktop and left-aligned on mobile.
+
+## Import
+
+```tsx
+import { Timeline } from '@/components/sections/Timeline';
+```
+
+## Usage
+
+```tsx
+export default function Home() {
+  return (
+    <main>
+      <Timeline />
+    </main>
+  );
+}
+```
+
+## Props
+
+This component does not accept any props.
+
+## Features
+
+- **Vertical timeline**: Central line with alternating event positions (desktop)
+- **Mobile-optimized**: Left-aligned layout for small screens
+- **Highlight system**: Key events marked with orange color and glow
+- **Gradient line**: Vertical line with gradient fade effect
+- **Animated dots**: Pulsing indicator dots for each event
+- **Responsive layout**: Switches between desktop and mobile layouts
+
+## Event Data Structure
+
+```tsx
+const events = [
+  {
+    date: "15 Mar - 5 Apr 2026",
+    title: "Pendaftaran Gelombang Pertama",
+    description: "Periode pendaftaran awal dibuka...",
+    highlight: true,
+  },
+  // ... more events
+];
+```
+
+<ParamField path="date" type="string">
+  Date range or specific date for the event
+</ParamField>
+
+<ParamField path="title" type="string">
+  Event title displayed prominently
+</ParamField>
+
+<ParamField path="description" type="string">
+  Brief description of the event
+</ParamField>
+
+<ParamField path="highlight" type="boolean">
+  Whether to highlight this event with orange accent (default: false)
+</ParamField>
+
+## Layout Behavior
+
+### Desktop (md and above)
+- Central vertical line with gradient
+- Events alternate between left and right sides
+- Center dots with ring effect
+- Text alignment follows event side (right-aligned for left events)
+
+### Mobile
+- All events aligned to the left
+- Vertical line on the left side
+- Smaller dots positioned absolutely
+- Consistent left text alignment
+
+## Styling
+
+- **Highlight color**: `text-neon-orange` with custom shadow
+- **Default color**: `text-neon-blue` with blue glow
+- **Line gradient**: `from-transparent via-neon-orange/50 to-transparent`
+- **Dot shadows**: Color-specific shadow effects (0_0_20px for highlights)
+- **Hover effect**: Scale transformation (1.01x) on event hover

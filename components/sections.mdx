@@ -1,0 +1,706 @@
+---
+title: Section Components
+description: Page section components for hero, about, tracks, timeline, and more
+icon: layout-grid
+---
+
+Section components are the building blocks of the I/O Festival 2026 landing page. Each section serves a specific purpose and uses Framer Motion for scroll-triggered animations.
+
+## Hero & Landing Sections
+
+<AccordionGroup>
+  <Accordion title="Hero" icon="house">
+    
+    ### Purpose
+    
+    The Hero component is the main landing section featuring the I/O Festival branding, description, call-to-action, and a live countdown timer.
+    
+    ### Key Features
+    
+    - **Glassmorphic Design**: Frosted glass card with gradient borders
+    - **Animated 3D Elements**: Static positioned decorative images scattered throughout
+    - **Color Glows**: Animated background glows with pure CSS keyframes
+    - **Countdown Integration**: Embedded Countdown component
+    - **Scroll Indicator**: Animated chevron prompting user to explore
+    
+    ### Import
+    
+    ```tsx
+    import { Hero } from '@/components/sections/Hero';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    export default function HomePage() {
+      return (
+        <>
+          <Hero />
+          {/* Other sections */}
+        </>
+      );
+    }
+    ```
+    
+    ### Animation System
+    
+    CSS keyframe animations for background glows:
+    ```css
+    @keyframes hero-glow-1 {
+      0%, 100% { transform: translate(0px, 0px); opacity: 0.35; }
+      50% { transform: translate(30px, -20px); opacity: 0.5; }
+    }
+    ```
+    
+    Framer Motion content animations:
+    ```tsx
+    // Title
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.7 }}
+    
+    // Description
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: 0.15 }}
+    ```
+    
+    ### Layout Structure
+    
+    - **Container**: Full viewport height with centered content
+    - **Grid**: 12-column layout (7 cols text, 5 cols countdown on desktop)
+    - **Elements**: 3D decorative images positioned absolutely throughout
+    
+    ### Gradient Text Effect
+    
+    ```tsx
+    className="bg-clip-text text-transparent"
+    style={{
+      backgroundImage: 'linear-gradient(135deg, #a64dff 0%, #ffffff 25%, #ff8c42 50%, #55D5E7 75%, #ffffff 100%)'
+    }}
+    ```
+    
+  </Accordion>
+
+  <Accordion title="Countdown" icon="timer">
+    
+    ### Purpose
+    
+    A dynamic countdown timer showing time remaining until registration opens/closes, with multiple phase states.
+    
+    ### Key Features
+    
+    - **Multi-phase Logic**: Handles before_open, wave1, wave2, and closed states
+    - **Real-time Updates**: Updates every second
+    - **Timezone Aware**: Uses Jakarta time (WIB/UTC+7)
+    - **Customizable Accent**: Optional accent color prop
+    - **Glassmorphic Design**: Premium frosted glass aesthetic
+    
+    ### Props
+    
+    ```tsx
+    interface CountdownProps {
+      accentColor?: string; // Optional hex color for accents (default: theme colors)
+    }
+    ```
+    
+    ### Import
+    
+    ```tsx
+    import { Countdown } from '@/components/sections/Countdown';
+    ```
+    
+    ### Usage Examples
+    
+    ```tsx
+    // Default theme colors
+    <Countdown />
+    
+    // Custom accent color
+    <Countdown accentColor="#ff8c42" />
+    ```
+    
+    ### Phase States
+    
+    | Phase | Target Date | Label | Description |
+    |-------|-------------|-------|-------------|
+    | `before_open` | Mar 15, 2026 | "Pendaftaran dibuka dalam" | Before registration opens |
+    | `wave1` | Apr 5, 2026 | "Early Bird ditutup dalam" | Early bird pricing period |
+    | `wave2` | Apr 30, 2026 | "Pendaftaran ditutup dalam" | Final registration period |
+    | `closed` | N/A | "Pendaftaran telah ditutup" | After deadline |
+    
+    ### Implementation
+    
+    ```tsx
+    const OPEN_REG_DATE = new Date("2026-03-15T00:00:00+07:00");
+    const CLOSE_REG_DATE = new Date("2026-04-30T23:59:59+07:00");
+    
+    // Updates every second
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setNow(new Date());
+      }, 1000);
+      return () => clearInterval(timer);
+    }, []);
+    ```
+    
+    ### Time Display Format
+    
+    Displays four units with leading zeros:
+    - Days (Hari)
+    - Hours (Jam)
+    - Minutes (Menit)
+    - Seconds (Detik)
+    
+  </Accordion>
+
+  <Accordion title="About" icon="info">
+    
+    ### Purpose
+    
+    Introduces the I/O Festival mission with three core pillars: Akademik, Festival, and Publikasi.
+    
+    ### Key Features
+    
+    - **Two-column Layout**: Descriptive text + pillar cards
+    - **Scroll Animations**: Staggered entrance effects
+    - **Interactive Cards**: Hover effects with icon scaling
+    - **Impact Projection**: Highlights the new evaluation criteria
+    
+    ### Import
+    
+    ```tsx
+    import { About } from '@/components/sections/About';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <About />
+    ```
+    
+    ### Pillar Structure
+    
+    ```tsx
+    const pillars = [
+      {
+        icon: GraduationCap,
+        title: "Akademik",
+        description: "Kami mewadahi bakat pelajar dari seluruh Indonesia..."
+      },
+      {
+        icon: PartyPopper,
+        title: "Festival",
+        description: "Acara ini menghadirkan pameran dan presentasi interaktif..."
+      },
+      {
+        icon: Megaphone,
+        title: "Publikasi",
+        description: "Acara ini memperkenalkan kiprah FTI UNTAR..."
+      }
+    ];
+    ```
+    
+    ### Animation Configuration
+    
+    ```tsx
+    // Text content
+    initial={{ opacity: 0, x: -50 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true, amount: 0, margin: "0px 0px 800px 0px" }}
+    transition={{ duration: 0.8 }}
+    
+    // Pillar cards (staggered)
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: index * 0.1 }}
+    ```
+    
+  </Accordion>
+</AccordionGroup>
+
+## Competition & Content Sections
+
+<AccordionGroup>
+  <Accordion title="Tracks" icon="trophy">
+    
+    ### Purpose
+    
+    Displays the three competition categories with descriptions and registration links.
+    
+    ### Key Features
+    
+    - **Three Competition Cards**: UI/UX Design, Web Development, Business Case
+    - **Glassmorphic Cards**: Frosted glass effect with gradient borders
+    - **Hover Effects**: Animated glows and button shimmers
+    - **Direct Registration**: Links to competition-specific registration
+    
+    ### Import
+    
+    ```tsx
+    import { Tracks } from '@/components/sections/Tracks';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <Tracks />
+    ```
+    
+    ### Track Configuration
+    
+    ```tsx
+    const tracks = [
+      {
+        icon: Palette,
+        title: 'UI/UX Design',
+        description: 'Rancang antarmuka dan pengalaman pengguna...',
+        color: 'from-neon-purple to-purple-600',
+        accentHex: '#a64dff',
+        href: '/kompetisi/ui-ux',
+      },
+      {
+        icon: Code2,
+        title: 'Web Development',
+        description: 'Bangun sebuah layanan website fungsional...',
+        color: 'from-neon-blue to-blue-600',
+        accentHex: '#55D5E7',
+        href: '/kompetisi/web-dev',
+      },
+      {
+        icon: Briefcase,
+        title: 'Business Case',
+        description: 'Susun rencana bisnis berbasis teknologi...',
+        color: 'from-neon-orange to-orange-600',
+        accentHex: '#ff8c42',
+        href: '/kompetisi/business-case',
+      }
+    ];
+    ```
+    
+    ### Card Styling
+    
+    ```tsx
+    style={{
+      background: 'rgba(255, 255, 255, 0)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+    }}
+    ```
+    
+  </Accordion>
+
+  <Accordion title="Timeline" icon="calendar">
+    
+    ### Purpose
+    
+    Displays the event schedule in a vertical timeline format with alternating left/right layout on desktop.
+    
+    ### Key Features
+    
+    - **Seven Timeline Events**: From registration to finals
+    - **Responsive Layout**: Vertical line on mobile, centered on desktop
+    - **Highlighted Events**: Color-coded important dates
+    - **Scroll Animations**: Staggered fade-in effects
+    
+    ### Import
+    
+    ```tsx
+    import { Timeline } from '@/components/sections/Timeline';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <Timeline />
+    ```
+    
+    ### Event Data Structure
+    
+    ```tsx
+    const events = [
+      {
+        date: "15 Mar - 5 Apr 2026",
+        title: "Pendaftaran Gelombang Pertama",
+        description: "Periode pendaftaran awal...",
+        highlight: true, // Orange highlight
+      },
+      {
+        date: "6 Apr - 30 Apr 2026",
+        title: "Pendaftaran Gelombang Kedua & Pengumpulan Karya",
+        description: "Periode pendaftaran reguler...",
+        highlight: true,
+      },
+      // ... more events
+    ];
+    ```
+    
+    ### Visual Design
+    
+    - **Center Line**: Gradient vertical line (transparent → accent → transparent)
+    - **Dots**: Color-coded based on `highlight` prop (orange/blue)
+    - **Alternating Layout**: Desktop switches between left/right text alignment
+    
+  </Accordion>
+
+  <Accordion title="Prizes" icon="gift">
+    
+    ### Purpose
+    
+    Displays the total prize pool with an animated counting effect.
+    
+    ### Key Features
+    
+    - **Animated Counter**: Counts up from 0 to Rp 46,000,000
+    - **Indonesian Formatting**: Uses `Intl.NumberFormat` with id-ID locale
+    - **Glassmorphic Plaque**: Premium floating card design
+    - **Scroll-triggered**: Animation starts when section enters viewport
+    
+    ### Import
+    
+    ```tsx
+    import { Prizes } from '@/components/sections/Prizes';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <Prizes />
+    ```
+    
+    ### Animation Implementation
+    
+    ```tsx
+    const count = useMotionValue(0);
+    const roundedDisplay = useTransform(count, (latest) => {
+      return "Rp " + new Intl.NumberFormat('id-ID').format(Math.round(latest));
+    });
+    
+    useEffect(() => {
+      if (isInView) {
+        const controls = animate(count, 46000000, { 
+          duration: 1.2, 
+          ease: "easeOut"
+        });
+        return controls.stop;
+      }
+    }, [isInView, count]);
+    ```
+    
+    ### Styling
+    
+    ```tsx
+    // Glassmorphic container
+    backdrop-blur-md bg-white/[0.03] border border-white/10
+    
+    // Gradient text
+    bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange
+    ```
+    
+  </Accordion>
+
+  <Accordion title="FAQ" icon="circle-help">
+    
+    ### Purpose
+    
+    Displays frequently asked questions in an interactive accordion format.
+    
+    ### Key Features
+    
+    - **Seven FAQ Items**: Common questions about the competition
+    - **Interactive Accordion**: Click to expand/collapse answers
+    - **Smooth Animations**: Height and opacity transitions
+    - **Icon Indicators**: Plus/minus icons show open/closed state
+    
+    ### Import
+    
+    ```tsx
+    import { FAQ } from '@/components/sections/FAQ';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <FAQ />
+    ```
+    
+    ### FAQ Data Structure
+    
+    ```tsx
+    const faqs = [
+      {
+        question: "Siapa pihak yang dapat mendaftar?",
+        answer: "I/O Festival 2026 menyambut pelajar SMA sederajat..."
+      },
+      // ... more questions
+    ];
+    ```
+    
+    ### Interaction Logic
+    
+    ```tsx
+    const [openIndex, setOpenIndex] = useState<number | null>(null);
+    
+    // Toggle on click
+    onClick={() => setOpenIndex(openIndex === index ? null : index)}
+    ```
+    
+    ### Animation
+    
+    ```tsx
+    <AnimatePresence>
+      {openIndex === index && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {/* Answer content */}
+        </motion.div>
+      )}
+    </AnimatePresence>
+    ```
+    
+  </Accordion>
+</AccordionGroup>
+
+## Contact & CTA Sections
+
+<AccordionGroup>
+  <Accordion title="Contact" icon="mail">
+    
+    ### Purpose
+    
+    Provides partnership and sponsorship contact form with embedded map showing venue location.
+    
+    ### Key Features
+    
+    - **Partnership Form**: Email-based contact form for sponsors
+    - **Interactive Map**: Custom map component showing UNTAR location
+    - **Statistics Display**: Shows reach metrics (1000+ participants, etc.)
+    - **Contact Methods**: Email, location details
+    
+    ### Import
+    
+    ```tsx
+    import { Contact } from '@/components/sections/Contact';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <Contact />
+    ```
+    
+    ### Form Implementation
+    
+    ```tsx
+    const [company, setCompany] = useState('');
+    const [email, setEmail] = useState('');
+    const [type, setType] = useState('');
+    const [message, setMessage] = useState('');
+    
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      const mailtoLink = `mailto:iobemftiuntar@gmail.com?subject=${...}&body=${...}`;
+      window.location.href = mailtoLink;
+    };
+    ```
+    
+    ### Map Integration
+    
+    ```tsx
+    <Map center={[106.7888, -6.1678]} zoom={16} pitch={45}>
+      <MapControls position="bottom-right" showZoom />
+      <MapMarker longitude={106.7888} latitude={-6.1678}>
+        <MarkerContent>{/* Marker UI */}</MarkerContent>
+        <MarkerTooltip>Universitas Tarumanagara</MarkerTooltip>
+        <MarkerPopup>{/* Detailed info */}</MarkerPopup>
+      </MapMarker>
+    </Map>
+    ```
+    
+    ### Partnership Types
+    
+    - Sponsor Utama
+    - Sponsor Pendukung
+    - Media Partner
+    - Community Partner
+    - Lainnya
+    
+  </Accordion>
+
+  <Accordion title="CTA" icon="mouse-pointer-click">
+    
+    ### Purpose
+    
+    Call-to-action section encouraging visitors to register for the competition.
+    
+    ### Key Features
+    
+    - **Glassmorphic Card**: Premium frosted glass design
+    - **Gradient Hover Effect**: Subtle color shift on interaction
+    - **Prize Highlight**: Emphasizes Rp 46,000,000 total prize
+    - **Direct Registration Link**: Links to /kelengkapan
+    
+    ### Import
+    
+    ```tsx
+    import { CTA } from '@/components/sections/CTA';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <CTA />
+    ```
+    
+    ### Component Structure
+    
+    ```tsx
+    <section className="relative py-24 bg-black">
+      <div className="glassmorphic-card">
+        <h2>Siap Berkompetisi?</h2>
+        <p>
+          Total hadiah mencapai 
+          <span className="text-neon-orange font-bold">Rp 46.000.000</span>
+        </p>
+        <Link href="/kelengkapan">
+          DAFTAR SEKARANG
+        </Link>
+      </div>
+    </section>
+    ```
+    
+    ### Hover Effect
+    
+    ```tsx
+    // Gradient appears on hover
+    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+      bg-gradient-to-br from-neon-orange/10 via-transparent to-neon-purple/10
+    </div>
+    ```
+    
+  </Accordion>
+
+  <Accordion title="Sponsors" icon="handshake">
+    
+    ### Purpose
+    
+    Displays sponsor logos in tiered layout (placeholder structure).
+    
+    ### Import
+    
+    ```tsx
+    import { Sponsors } from '@/components/sections/Sponsors';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <Sponsors />
+    ```
+    
+    ### Tier Structure
+    
+    ```tsx
+    const sponsorTiers = [
+      {
+        logos: [
+          { name: 'Festival Partner', width: 200, height: 100 },
+          { name: 'Case Collaborator', width: 200, height: 100 },
+        ]
+      },
+      // Mid tier with smaller logos
+      // Lower tier with even smaller logos
+    ];
+    ```
+    
+  </Accordion>
+
+  <Accordion title="MediaPartners" icon="radio">
+    
+    ### Purpose
+    
+    Displays media partner logos in tiered layout (placeholder structure).
+    
+    ### Import
+    
+    ```tsx
+    import { MediaPartners } from '@/components/sections/MediaPartners';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <MediaPartners />
+    ```
+    
+  </Accordion>
+
+  <Accordion title="Gallery" icon="images">
+    
+    ### Purpose
+    
+    Interactive WebGL-powered 3D photo gallery showcasing past events.
+    
+    ### Key Features
+    
+    - **WebGL Rendering**: Custom 3D gallery using Three.js
+    - **Drag Interaction**: Users can drag to explore photos
+    - **Seamless Integration**: Fades into page with mask gradients
+    - **Performance Optimized**: WebGL instance with proper cleanup
+    
+    ### Import
+    
+    ```tsx
+    import { Gallery } from '@/components/sections/Gallery';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <Gallery />
+    ```
+    
+    ### Implementation
+    
+    ```tsx
+    const containerRef = useRef<HTMLDivElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    
+    useEffect(() => {
+      const galleryApp = new WebGLGallery(containerRef.current, canvasRef.current);
+      return () => {
+        galleryApp.destroy();
+      };
+    }, []);
+    ```
+    
+    ### Mask Effect
+    
+    ```tsx
+    style={{
+      maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)',
+      WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)',
+    }}
+    ```
+    
+  </Accordion>
+</AccordionGroup>
+
+## Common Animation Pattern
+
+Most section components use consistent Framer Motion viewport settings:
+
+```tsx
+whileInView={{ opacity: 1, y: 0 }}
+viewport={{ 
+  once: true,           // Animate only once
+  amount: 0,            // Trigger immediately when any part enters
+  margin: "0px 0px 800px 0px" // Extended bottom margin for early trigger
+}}
+```
+
+This creates a smooth, performant scroll experience across all sections.

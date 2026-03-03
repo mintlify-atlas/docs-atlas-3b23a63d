@@ -1,0 +1,313 @@
+---
+title: 'SmoothScroll'
+description: 'Lenis smooth scrolling wrapper component'
+---
+
+## Overview
+
+The `SmoothScroll` component provides smooth, buttery scrolling behavior using the Lenis library. It wraps your application content with `ReactLenis` to create physics-based smooth scrolling with momentum and easing. This enhances the user experience with natural, fluid scrolling animations.
+
+## Dependencies
+
+This component requires:
+
+- `lenis` - Smooth scrolling library
+- `lenis/react` - React wrapper for Lenis
+
+## Installation
+
+```bash
+npm install lenis
+# or
+yarn add lenis
+# or
+pnpm add lenis
+```
+
+## Import
+
+```tsx
+import { SmoothScroll } from '@/components/effects/SmoothScroll';
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  The content to wrap with smooth scrolling behavior
+</ParamField>
+
+## Usage
+
+### Basic Usage
+
+Wrap your application or page content:
+
+```tsx
+import { SmoothScroll } from '@/components/effects/SmoothScroll';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
+      </body>
+    </html>
+  );
+}
+```
+
+### Page-Level Usage
+
+```tsx
+export default function Page() {
+  return (
+    <SmoothScroll>
+      <Nav />
+      <Hero />
+      <Content />
+      <Footer />
+    </SmoothScroll>
+  );
+}
+```
+
+## Configuration
+
+The component uses the following default Lenis options:
+
+<ParamField path="lerp" type="number" default={0.1}>
+  Linear interpolation factor (0-1). Lower values = smoother but slower. Controls how quickly the scroll position catches up to the target.
+</ParamField>
+
+<ParamField path="duration" type="number" default={1.2}>
+  Scroll duration in seconds for programmatic scrolling
+</ParamField>
+
+<ParamField path="smoothWheel" type="boolean" default={true}>
+  Enable smooth scrolling for mouse wheel events
+</ParamField>
+
+<ParamField path="syncTouch" type="boolean" default={false}>
+  Disable smooth scrolling on touch devices for better native feel
+</ParamField>
+
+<ParamField path="root" type="boolean" default={true}>
+  Use window as scroll container instead of a specific element
+</ParamField>
+
+## How It Works
+
+### Smooth Scrolling Physics
+
+Lenis implements momentum-based scrolling:
+
+1. User scrolls with mouse wheel or trackpad
+2. Lenis calculates target scroll position
+3. Current position interpolates toward target using `lerp` factor
+4. Creates smooth, physics-based easing effect
+
+### lerp Parameter Explained
+
+The `lerp` value (0.1) means:
+- Each frame, scroll position moves 10% closer to target
+- Lower values (0.05) = smoother but slower response
+- Higher values (0.2) = faster but less smooth
+- Value of 1.0 = instant (no smoothing)
+
+## Customization
+
+### Custom Configuration
+
+Modify the source to change options:
+
+```tsx
+export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  return (
+    <ReactLenis
+      root
+      options={{
+        lerp: 0.08,           // Slower, smoother
+        duration: 1.5,        // Longer duration
+        smoothWheel: true,
+        syncTouch: false,
+        wheelMultiplier: 1.0, // Scroll speed
+        touchMultiplier: 2.0, // Touch scroll speed
+      }}
+    >
+      {children}
+    </ReactLenis>
+  );
+}
+```
+
+### Create Variants
+
+Create different smooth scroll presets:
+
+```tsx
+// Fast and responsive
+export function SmoothScrollFast({ children }) {
+  return (
+    <ReactLenis root options={{ lerp: 0.15, duration: 0.8 }}>
+      {children}
+    </ReactLenis>
+  );
+}
+
+// Very smooth and slow
+export function SmoothScrollButtery({ children }) {
+  return (
+    <ReactLenis root options={{ lerp: 0.05, duration: 1.8 }}>
+      {children}
+    </ReactLenis>
+  );
+}
+```
+
+## Performance Considerations
+
+### Optimizations
+
+- **Efficient RAF usage**: Lenis uses a single `requestAnimationFrame` loop
+- **GPU acceleration**: Utilizes CSS transforms for smooth rendering
+- **Touch devices**: `syncTouch: false` preserves native touch scrolling
+- **Automatic cleanup**: Properly cleans up on unmount
+
+### Performance Tips
+
+- Use `syncTouch: false` to maintain native touch performance
+- Consider disabling on mobile if performance is critical
+- Higher `lerp` values reduce CPU usage but are less smooth
+- Test with Chrome DevTools Performance tab
+
+### Mobile Considerations
+
+The default configuration (`syncTouch: false`) is optimized for mobile:
+- Native touch scrolling feels more natural on mobile
+- Reduces CPU/GPU usage on lower-end devices
+- Smooth wheel scrolling still works for trackpad users
+
+## Advanced Usage
+
+### Programmatic Scrolling
+
+Access Lenis instance for programmatic control:
+
+```tsx
+import { useLenis } from 'lenis/react';
+
+function ScrollToTop() {
+  const lenis = useLenis();
+  
+  const scrollToTop = () => {
+    lenis?.scrollTo(0, { duration: 2 });
+  };
+  
+  return <button onClick={scrollToTop}>Scroll to Top</button>;
+}
+```
+
+### Scroll to Element
+
+```tsx
+function ScrollToSection() {
+  const lenis = useLenis();
+  
+  const scrollToSection = () => {
+    lenis?.scrollTo('#section-id', { 
+      offset: -100,
+      duration: 1.5 
+    });
+  };
+  
+  return <button onClick={scrollToSection}>Go to Section</button>;
+}
+```
+
+### Listen to Scroll Events
+
+```tsx
+function ScrollListener() {
+  const lenis = useLenis(({ scroll }) => {
+    console.log('Current scroll position:', scroll);
+  });
+  
+  return null;
+}
+```
+
+## Browser Support
+
+Works in all modern browsers:
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 15+
+
+Requires:
+- `requestAnimationFrame` support
+- CSS transforms support
+
+## Accessibility
+
+### Keyboard Navigation
+
+Lenis maintains keyboard accessibility:
+- Arrow keys work normally
+- Page Up/Down work normally
+- Home/End keys work normally
+- Tab navigation is unaffected
+
+### Reduced Motion
+
+Consider respecting user preferences:
+
+```tsx
+export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  if (prefersReducedMotion) {
+    return <>{children}</>;
+  }
+
+  return (
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.2 }}>
+      {children}
+    </ReactLenis>
+  );
+}
+```
+
+## Common Issues
+
+### Scroll Position Not Updating
+
+Ensure the component wraps your entire scrollable content and `root` is set to `true`.
+
+### Janky Scrolling
+
+Try adjusting the `lerp` value:
+- Increase for more responsive (less smooth)
+- Decrease for smoother (less responsive)
+
+### Fixed Elements Jumping
+
+Use CSS `will-change: transform` on fixed elements:
+
+```css
+.fixed-element {
+  position: fixed;
+  will-change: transform;
+}
+```
+
+## Notes
+
+- The component is marked with `'use client'` directive for Next.js
+- Only one `SmoothScroll` instance should wrap your app
+- Works with both scroll-triggered animations and regular scrolling
+- Consider disabling on mobile for better native performance
+- Compatible with Framer Motion scroll animations

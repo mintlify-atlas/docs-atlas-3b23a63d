@@ -1,0 +1,121 @@
+---
+title: Contact
+description: API reference for the Contact section with partnership form and map
+---
+
+The Contact section displays a partnership form alongside location information and an interactive map using MapLibre GL.
+
+## Import
+
+```tsx
+import { Contact } from '@/components/sections/Contact';
+```
+
+## Usage
+
+```tsx
+export default function Home() {
+  return (
+    <main>
+      <Contact />
+    </main>
+  );
+}
+```
+
+## Props
+
+This component does not accept any props.
+
+## Features
+
+- **Partnership form**: Email-based contact form with mailto link
+- **Interactive map**: MapLibre GL map with custom marker
+- **Form validation**: Required fields for company, email, and message
+- **Partnership metrics**: Display reach statistics (1,000+ participants, 50+ institutions)
+- **Location info**: Contact email and physical address display
+- **Responsive layout**: Two-column on desktop, stacked on mobile
+
+## Form State
+
+```tsx
+const [company, setCompany] = useState('');
+const [email, setEmail] = useState('');
+const [type, setType] = useState('');
+const [message, setMessage] = useState('');
+```
+
+## Form Fields
+
+<ParamField path="company" type="string" required>
+  Company or organization name
+</ParamField>
+
+<ParamField path="email" type="email" required>
+  Contact email address
+</ParamField>
+
+<ParamField path="type" type="select">
+  Partnership type: Sponsor Utama, Sponsor Pendukung, Media Partner, Community Partner, or Lainnya
+</ParamField>
+
+<ParamField path="message" type="textarea" required>
+  Partnership proposal message
+</ParamField>
+
+## Form Submission
+
+The form creates a mailto link with pre-filled subject and body:
+
+```tsx
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  const mailtoLink = `mailto:iobemftiuntar@gmail.com?subject=${encodeURIComponent(
+    `[Partnership] ${type || 'Kerjasama'} — ${company}`
+  )}&body=${encodeURIComponent(
+    `Perusahaan/Organisasi: ${company}\nEmail: ${email}\nJenis Kerjasama: ${type}\n\n${message}`
+  )}`;
+  window.location.href = mailtoLink;
+};
+```
+
+## Map Configuration
+
+```tsx
+<Map center={[106.7888, -6.1678]} zoom={16} pitch={45}>
+  <MapControls position="bottom-right" showZoom />
+  <MapMarker longitude={106.7888} latitude={-6.1678}>
+    <MarkerContent>{/* Marker UI */}</MarkerContent>
+    <MarkerTooltip>{/* Hover tooltip */}</MarkerTooltip>
+    <MarkerPopup>{/* Click popup */}</MarkerPopup>
+  </MapMarker>
+</Map>
+```
+
+- **Center**: Universitas Tarumanagara (106.7888, -6.1678)
+- **Zoom level**: 16
+- **Pitch**: 45 degrees (3D perspective)
+- **Controls**: Zoom controls at bottom-right
+
+## Map Marker
+
+- **Animated ping effect**: Orange pulsing ring
+- **MapPin icon**: Lucide React icon with neon-orange background
+- **Tooltip on hover**: Shows "Universitas Tarumanagara"
+- **Popup on click**: Full address and campus details
+- **Custom styling**: Border, shadow, and scale animations
+
+## Styling
+
+- **Input fields**: `bg-white/5` with `border-white/10`
+- **Focus state**: `focus:border-neon-orange`
+- **Submit button**: Full-width orange button with hover transitions
+- **Map overlay**: Blue tint (`bg-neon-blue/20`) for visual consistency
+- **Stats cards**: Border with minimal background
+- **Icon containers**: `bg-white/5` with `border-white/10`
+
+## Dependencies
+
+- `@/components/ui/map`: Custom MapLibre GL wrapper components
+- `lucide-react`: Mail, MapPin, Send, Handshake icons
+- `framer-motion`: Entrance animations for form and info sections

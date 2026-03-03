@@ -1,0 +1,352 @@
+---
+title: 'Theming & Colors'
+description: 'Learn about the color system, custom fonts, and glassmorphism effects used in I/O Festival 2026'
+---
+
+## Overview
+
+The I/O Festival 2026 website uses a futuristic design system built on Tailwind CSS with custom color palettes, two custom font families, and extensive glassmorphism effects to create a cyberpunk aesthetic.
+
+## Color System
+
+### Neon Accent Colors
+
+The theme features three primary neon colors that define the visual identity:
+
+```css globals.css
+@theme {
+  --color-neon-blue: #55d5e7;
+  --color-neon-purple: #b664fb;
+  --color-neon-orange: #ff8b53;
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-glass-surface: rgba(255, 255, 255, 0.03);
+}
+```
+
+### Using Neon Colors
+
+You can use these colors throughout your components with Tailwind utility classes:
+
+<CodeGroup>
+
+```tsx Text Colors
+<h1 className="text-neon-purple">Purple Heading</h1>
+<p className="text-neon-blue">Blue text</p>
+<span className="text-neon-orange">Orange accent</span>
+```
+
+```tsx Background Colors
+<div className="bg-neon-purple/20">Purple background with 20% opacity</div>
+<div className="bg-neon-blue/30">Blue background with 30% opacity</div>
+```
+
+```tsx Gradients
+<div className="bg-gradient-to-r from-neon-purple to-neon-orange">
+  Purple to Orange gradient
+</div>
+
+<span 
+  className="bg-clip-text text-transparent"
+  style={{
+    backgroundImage: 'linear-gradient(135deg, #a64dff 0%, #ffffff 25%, #ff8c42 50%, #55D5E7 75%, #ffffff 100%)'
+  }}
+>
+  Multi-color gradient text
+</span>
+```
+
+</CodeGroup>
+
+### Dark Theme Variables
+
+The site uses a dark theme by default with OKLCH color space for better perceptual uniformity:
+
+```css globals.css
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+}
+```
+
+Body background is set to near-black:
+
+```css globals.css
+body {
+  background-color: #0a0a0a;
+  color: #ffffff;
+}
+```
+
+## Custom Fonts
+
+### Font Families
+
+The project uses two custom font families loaded via Next.js `localFont`:
+
+#### 1. Raela Grotesque (Display Font)
+
+Used for headings and bold statements with full weight range (100-900):
+
+```tsx layout.tsx
+const raela = localFont({
+  src: [
+    { path: './fonts/raelagrotesque/RaelaGrotesque-Thin-BF67b427f305180.ttf', weight: '100', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-ExtraLight-BF67b427f310b80.ttf', weight: '200', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-Light-BF67b427f312600.ttf', weight: '300', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-Regular-BF67b427f3144cd.ttf', weight: '400', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-Medium-BF67b427f311230.ttf', weight: '500', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-SemiBold-BF67b427f313d28.ttf', weight: '600', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-Bold-BF67b427f311913.ttf', weight: '700', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-ExtraBold-BF67b427f30ffda.ttf', weight: '800', style: 'normal' },
+    { path: './fonts/raelagrotesque/RaelaGrotesque-Black-BF67b427f2c4ada.ttf', weight: '900', style: 'normal' },
+  ],
+  variable: '--font-raela',
+  display: 'swap',
+});
+```
+
+#### 2. Plus Jakarta Sans (Body Font)
+
+Used for body text and UI elements (weights 200-800):
+
+```tsx layout.tsx
+const jakarta = localFont({
+  src: [
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-ExtraLight.ttf', weight: '200', style: 'normal' },
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-Light.ttf', weight: '300', style: 'normal' },
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-Regular.ttf', weight: '400', style: 'normal' },
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-Medium.ttf', weight: '500', style: 'normal' },
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-SemiBold.ttf', weight: '600', style: 'normal' },
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-Bold.ttf', weight: '700', style: 'normal' },
+    { path: './fonts/plusjakartasans/static/PlusJakartaSans-ExtraBold.ttf', weight: '800', style: 'normal' },
+  ],
+  variable: '--font-jakarta',
+  display: 'swap',
+});
+```
+
+### Using Custom Fonts
+
+Fonts are applied via CSS variables in the body:
+
+```tsx layout.tsx
+<body
+  className={cn(
+    raela.variable,
+    jakarta.variable,
+    'bg-black text-white font-sans antialiased'
+  )}
+>
+```
+
+<CodeGroup>
+
+```tsx Raela Font (Headings)
+<h1 className="font-raela font-black text-6xl">
+  I/O FESTIVAL
+</h1>
+```
+
+```tsx Jakarta Font (Body)
+<p className="font-sans text-lg">
+  Default body text uses Plus Jakarta Sans
+</p>
+```
+
+```tsx Utility Class
+<div className="font-raela font-bold">
+  Apply Raela anywhere
+</div>
+```
+
+</CodeGroup>
+
+The `font-raela` utility class is defined in globals.css:
+
+```css globals.css
+.font-raela {
+  font-family: var(--font-raela), sans-serif;
+}
+```
+
+## Glassmorphism Effects
+
+### Glass Card Component
+
+The `.glass-card` utility class creates frosted glass effects with backdrop blur:
+
+```css globals.css
+.glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+  -webkit-backdrop-filter: brightness(1.1) blur(2px);
+  backdrop-filter: brightness(1.1) blur(2px);
+}
+
+.glass-card:not(.no-hover):hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+}
+```
+
+### Usage Examples
+
+<CodeGroup>
+
+```tsx Basic Glass Card
+<div className="glass-card p-8 rounded-2xl">
+  <h3 className="text-white font-bold">Glass Card</h3>
+  <p className="text-white/60">Content with frosted glass effect</p>
+</div>
+```
+
+```tsx Hero Glass Container
+<div
+  className="rounded-[24px] p-8 md:p-12 overflow-hidden relative backdrop-blur-md md:backdrop-blur-2xl"
+  style={{
+    background: 'rgba(255, 255, 255, 0)',
+    boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1), inset 0 2px 2px 0 rgba(255, 255, 255, 0.4)',
+  }}
+>
+  {/* Gradient border overlay */}
+  <div className="absolute inset-0 rounded-[24px] pointer-events-none" style={{
+    padding: '1.5px',
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 40%)',
+    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+    WebkitMaskComposite: 'xor',
+    maskComposite: 'exclude',
+  }}></div>
+  
+  {/* Content */}
+</div>
+```
+
+```tsx Countdown Glass Card
+<div 
+  className="rounded-3xl p-12 overflow-hidden bg-white/[0.03] backdrop-blur-xl border border-white/10"
+  style={{
+    boxShadow: '0 0 40px -10px rgba(168,85,247,0.2)'
+  }}
+>
+  {/* Ambient glow */}
+  <div className="absolute inset-0 opacity-30 bg-gradient-to-br from-neon-purple/20 via-transparent to-neon-orange/20" />
+  
+  {/* Content */}
+</div>
+```
+
+</CodeGroup>
+
+### iOS Safari Compatibility
+
+The glassmorphism implementation includes specific fixes for iOS Safari:
+
+```css globals.css
+@supports (-webkit-backdrop-filter: none) {
+  .glass-card {
+    -webkit-backdrop-filter: brightness(1.1) blur(2px);
+    backdrop-filter: brightness(1.1) blur(2px);
+  }
+}
+
+@supports (-webkit-appearance: none) {
+  .glass-card {
+    isolation: isolate;
+    -webkit-isolation: isolate;
+  }
+}
+```
+
+## Light Effects & Glows
+
+### Text Glow Utility
+
+```css globals.css
+.text-glow {
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+}
+```
+
+Usage:
+```tsx
+<h1 className="text-glow">Glowing Text</h1>
+```
+
+### Ambient Background Glows
+
+Creating floating glow effects behind content:
+
+```tsx Hero.tsx
+<div className="absolute inset-0 z-0 pointer-events-none">
+  <div
+    className="absolute -top-50 -right-37.5 w-125 h-125 rounded-full blur-[150px]"
+    style={{ background: '#a64dff', animation: 'hero-glow-1 10s ease-in-out infinite' }}
+  />
+  <div
+    className="absolute bottom-[5%] -left-25 w-112.5 h-112.5 rounded-full blur-[150px]"
+    style={{ background: '#ff8c42', animation: 'hero-glow-2 12s ease-in-out infinite' }}
+  />
+  <div
+    className="absolute top-[30%] -right-12.5 w-87.5 h-87.5 rounded-full blur-[150px]"
+    style={{ background: '#55D5E7', animation: 'hero-glow-3 14s ease-in-out infinite' }}
+  />
+</div>
+```
+
+### Shimmer Animation
+
+For hover effects on cards:
+
+```css globals.css
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+```
+
+Usage:
+```tsx
+<div className="group relative">
+  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 animate-[shimmer_3s_infinite]" />
+</div>
+```
+
+## GPU Acceleration
+
+For smooth animations, use the `.gpu` utility class:
+
+```css globals.css
+.gpu {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+```
+
+## Noise Overlay
+
+A subtle noise texture is applied globally for added depth:
+
+```tsx NoiseOverlay.tsx
+export function NoiseOverlay() {
+  return (
+    <div
+      className="fixed inset-0 z-[40] pointer-events-none opacity-[0.03] md:opacity-[0.05] mix-blend-normal"
+      style={{
+        backgroundImage: `url("data:image/png;base64,...")`,
+        backgroundRepeat: 'repeat',
+      }}
+    />
+  );
+}
+```

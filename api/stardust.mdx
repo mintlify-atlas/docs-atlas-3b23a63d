@@ -1,0 +1,208 @@
+---
+title: 'StarDust'
+description: 'Canvas-based particle effect with floating star particles'
+---
+
+## Overview
+
+The `StarDust` component creates an ambient particle effect using HTML5 Canvas. It renders floating particles (motes) with a subtle radial glow, creating a starfield background effect. The component is optimized for performance and automatically disables on mobile devices.
+
+## Dependencies
+
+This component has no external dependencies and uses only:
+- React hooks (`useEffect`, `useRef`)
+- HTML5 Canvas API
+- `requestAnimationFrame` for animation
+
+## Import
+
+```tsx
+import { StarDust } from '@/components/effects/StarDust';
+```
+
+## Props
+
+The `StarDust` component does not accept any props. All configuration is internal via constants.
+
+## Usage
+
+```tsx
+export default function Layout({ children }) {
+  return (
+    <>
+      <StarDust />
+      {children}
+    </>
+  );
+}
+```
+
+## Configuration
+
+The component uses the following internal constants that can be modified in the source:
+
+<ParamField path="MOTE_COUNT" type="number" default={40}>
+  Number of particle motes to render (excluding the large star)
+</ParamField>
+
+## Particle Properties
+
+Each particle (mote) has the following properties:
+
+<ParamField path="x" type="number">
+  Horizontal position on canvas
+</ParamField>
+
+<ParamField path="y" type="number">
+  Vertical position on canvas
+</ParamField>
+
+<ParamField path="size" type="number">
+  Particle radius (random between 0.3 and 2.8)
+</ParamField>
+
+<ParamField path="vx" type="number">
+  Horizontal velocity (random between -0.06 and 0.06)
+</ParamField>
+
+<ParamField path="vy" type="number">
+  Vertical velocity (random between -0.05 and -0.02)
+</ParamField>
+
+<ParamField path="alpha" type="number">
+  Opacity value (random between 0.1 and 0.6)
+</ParamField>
+
+<ParamField path="flicker" type="number">
+  Flicker rate (random between 0.004 and 0.019)
+</ParamField>
+
+<ParamField path="phase" type="number">
+  Animation phase offset (random)
+</ParamField>
+
+## Features
+
+### Responsive Canvas
+
+The canvas automatically resizes to match the window dimensions:
+
+```tsx
+function resize() {
+  cvs.width = window.innerWidth;
+  cvs.height = window.innerHeight;
+}
+```
+
+### Radial Glow Effect
+
+A subtle radial gradient is rendered behind particles:
+
+- Center position: 50% horizontal, 45% vertical
+- Radius: 80% of smallest viewport dimension
+- Colors: Soft blue-grey gradient fading to transparent
+
+### Hero Star
+
+In addition to regular particles, one large star is added with:
+- Size: 5 (larger than regular motes)
+- Position: Top 60% of viewport
+- Alpha: 0.35
+- Slower movement
+- No flicker effect
+
+### Mobile Optimization
+
+**Critical Performance Feature:**
+
+The component completely bypasses rendering on mobile viewports:
+
+```tsx
+if (window.innerWidth >= 768) {
+  // Render particles
+}
+```
+
+This prevents expensive canvas operations and particle calculations on mobile devices, significantly improving performance.
+
+## Styling
+
+The canvas element has the following default classes:
+
+- `fixed inset-0` - Covers entire viewport
+- `z-1` - Low z-index for background placement
+- `pointer-events-none` - Prevents interaction interference
+- `aria-hidden="true"` - Hidden from screen readers
+
+## Animation Loop
+
+The component uses `requestAnimationFrame` for smooth 60fps animation:
+
+1. Clears the canvas
+2. Renders radial glow gradient
+3. Updates particle positions
+4. Wraps particles at screen edges
+5. Draws each particle as a filled circle
+
+### Edge Wrapping
+
+Particles wrap around screen edges with a 5px buffer:
+
+```tsx
+if (m.x < -5) m.x = cvs.width + 5;
+if (m.x > cvs.width + 5) m.x = -5;
+if (m.y < -5) m.y = cvs.height + 5;
+if (m.y > cvs.height + 5) m.y = -5;
+```
+
+## Performance Considerations
+
+### Optimizations
+
+- **Mobile bypass**: Completely disabled on screens < 768px width
+- **Particle count**: 40 particles is optimized for performance/visual balance
+- **Canvas operations**: Minimal draw calls per frame
+- **RAF cleanup**: Properly cancels animation frame on unmount
+- **Event listeners**: Resize listener properly cleaned up
+
+### Performance Tips
+
+- Reduce `MOTE_COUNT` for lower-end devices
+- Consider using `will-change: transform` on canvas for GPU acceleration
+- The component is already optimized for typical use cases
+
+## Browser Support
+
+Requires HTML5 Canvas support (all modern browsers):
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 15+
+
+## Customization
+
+To customize the effect, modify these values in the source:
+
+```tsx
+// Particle count
+const MOTE_COUNT = 40;
+
+// Particle size range
+size: Math.random() * 2.5 + 0.3,
+
+// Velocity ranges
+vx: (Math.random() - 0.5) * 0.12,
+vy: (Math.random() - 0.5) * 0.08 - 0.02,
+
+// Opacity range
+alpha: Math.random() * 0.5 + 0.1,
+
+// Particle color
+fillStyle: `rgba(220,220,230,${m.alpha})`,
+```
+
+## Notes
+
+- The component is marked with `'use client'` directive for Next.js
+- Canvas context is 2D, not WebGL
+- Particle colors are light grey-white (220,220,230)
+- The effect is purely decorative and does not affect layout
