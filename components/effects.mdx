@@ -501,6 +501,99 @@ Effects components provide visual polish and enhanced interactions for the I/O F
     - Graceful fallback to native scrolling if unsupported
     
   </Accordion>
+
+  <Accordion title="BauhausGrid" icon="grid-2">
+    
+    ### Purpose
+    
+    Creates a dynamic Bauhaus-inspired geometric grid background with animated shapes, providing a distinctive artistic aesthetic aligned with the cyberpunk theme.
+    
+    ### Key Features
+    
+    - **Bauhaus Design**: Geometric shapes inspired by Bauhaus art movement
+    - **Animated Elements**: Framer Motion animations for smooth entrances
+    - **Interactive Hover**: Scale and rotation effects on hover
+    - **Neon Colors**: Uses theme accent colors (purple, orange, blue)
+    - **Responsive Grid**: Adapts from 2 columns (mobile) to 6 columns (desktop)
+    - **GPU Accelerated**: Uses `transform-gpu` for smooth performance
+    
+    ### Props
+    
+    The BauhausGrid component accepts no props.
+    
+    ### Import
+    
+    ```tsx
+    import { BauhausGrid } from '@/components/effects/BauhausGrid';
+    ```
+    
+    ### Usage Example
+    
+    ```tsx
+    <section className="relative min-h-screen bg-black">
+      <BauhausGrid />
+      <div className="relative z-10">
+        {/* Your content here */}
+      </div>
+    </section>
+    ```
+    
+    ### Grid Elements
+    
+    The component includes various geometric shapes:
+    
+    - **Purple Arch**: Large rounded corner element with gradient overlay
+    - **Orange Circle**: Pulsing circular element with highlight
+    - **Cyan Rectangle**: Glass-like element with diagonal pattern texture
+    - **Neon Beam**: Vertical gradient strip
+    - **Quarter Circles**: Corner accent elements
+    - **Geometric Pills**: Rounded rectangular elements
+    - **Grid Patterns**: Dotted and patterned fills
+    - **Wireframe Box**: Skewed white border element
+    
+    ### Animation Configuration
+    
+    Example of entry animation:
+    
+    ```tsx
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1 }}
+      className="col-span-2 row-span-2 rounded-tl-full bg-neon-purple"
+    >
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+    </motion.div>
+    ```
+    
+    ### Hover Interactions
+    
+    Interactive elements respond to hover:
+    
+    ```tsx
+    <motion.div
+      whileHover={{ scale: 1.1, rotate: 5 }}
+      className="bg-neon-orange shadow-[0_0_40px_rgba(255,139,83,0.6)]"
+    />
+    ```
+    
+    ### Performance Notes
+    
+    - Grid is skewed by -2 degrees for visual interest
+    - Uses `transform-gpu` for hardware acceleration
+    - Pointer events disabled (`pointer-events-none`) to avoid blocking content
+    - Shadow effects are progressive (lighter on mobile, enhanced on desktop)
+    - Many elements are hidden on mobile with `hidden md:block` for performance
+    
+    ### Styling
+    
+    - Positioned absolutely to cover container
+    - Uses neon color utilities: `bg-neon-purple`, `bg-neon-blue`, `bg-neon-orange`
+    - Opacity set to 90% to keep background visible
+    - Grid gaps: `gap-2` (mobile), `gap-4` (desktop)
+    
+  </Accordion>
 </AccordionGroup>
 
 ## Effects Stack
